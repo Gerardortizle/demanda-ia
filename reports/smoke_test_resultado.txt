@@ -1,0 +1,12 @@
+OK    [200] GET  /api/v1/salud
+OK    [200] GET  /api/v1/modelo
+OK    [200] GET  /api/v1/catalogo
+OK    [200] GET  / (frontend)
+OK    [200] GET  /docs (Swagger)
+OK    [200] POST /api/v1/pronostico
+OK    [200] POST /api/v1/pronostico/lote
+OK    [200] POST /api/v1/reabasto
+{"sucursal_id":"SUC-001","sku":"SKU-0009","horizonte_dias":7,"dias":[{"fecha":"2026-11-02","p50":20.61,"p90":31.54},{"fecha":"2026-11-03","p50":18.51,"p90":34.47},{"fecha":"2026-11-04","p50":18.09,"p90":35.17},{"fecha":"2026-11-05","p50":18.29,"p90":33.54},{"fecha":"2026-11-06","p50":18.71,"p90":35.31},{"fecha":"2026-11-07","p50":20.48,"p90":39.28},{"fecha":"2026-11-08","p50":17.57,"p90":34.84}],"demanda_esperada":132.26,"stock_seguridad":42.73,"existencia_actual":15.0,"pedido_sugerido":160,"advertencias":[],"modelo_version":"1.0.0"}
+OK    [422] POST pronostico SKU invalido
+-----
+Prueba de humo superada

@@ -1,0 +1,6 @@
+# Entrenamiento, pruebas y reportes (no se instalan en la imagen de producción)
+-r requirements.txt
+pandas==3.0.2
+pytest==9.1.1
+httpx==0.28.1
+matplotlib==3.10.8

@@ -1,0 +1,82 @@
+[
+  {
+    "escenario": "Base: antigripal, miércoles 4-nov-2026, historial 10 u/día",
+    "p50": 11.79,
+    "p90": 22.7,
+    "advertencias": []
+  },
+  {
+    "escenario": "Promoción con 15 % de descuento",
+    "p50": 17.37,
+    "p90": 31.7,
+    "advertencias": []
+  },
+  {
+    "escenario": "Precio 20 % arriba de lista",
+    "p50": 11.79,
+    "p90": 22.7,
+    "advertencias": [
+      "Precio relativo 1.20 fuera del rango de entrenamiento [0.75, 1.05]; se acoto para el calculo."
+    ]
+  },
+  {
+    "escenario": "Invierno: miércoles 13-ene-2027",
+    "p50": 11.46,
+    "p90": 22.3,
+    "advertencias": []
+  },
+  {
+    "escenario": "Verano: miércoles 15-jul-2026",
+    "p50": 7.6,
+    "p90": 15.89,
+    "advertencias": []
+  },
+  {
+    "escenario": "Festivo: lunes 16-nov-2026 (Revolución)",
+    "p50": 8.82,
+    "p90": 20.04,
+    "advertencias": []
+  },
+  {
+    "escenario": "Lunes normal 9-nov-2026",
+    "p50": 12.16,
+    "p90": 23.52,
+    "advertencias": []
+  },
+  {
+    "escenario": "Historial en ceros (SKU nuevo o quiebre)",
+    "p50": 1.2,
+    "p90": 4.05,
+    "advertencias": [
+      "Historial en ceros: posible SKU nuevo o quiebre de stock prolongado. Revisar manualmente."
+    ]
+  },
+  {
+    "escenario": "Pico atípico: historial 5 000 u/día",
+    "p50": 30.67,
+    "p90": 48.82,
+    "advertencias": [
+      "Ventas recientes muy por encima de lo habitual para el SKU (>270 u/dia). El pronostico extrapola poco; validar si hubo venta institucional o error de captura."
+    ]
+  },
+  {
+    "escenario": "Precio extremo: 1 peso",
+    "p50": 15.46,
+    "p90": 28.85,
+    "advertencias": [
+      "Precio relativo 0.01 fuera del rango de entrenamiento [0.75, 1.05]; se acoto para el calculo."
+    ]
+  },
+  {
+    "escenario": "Crónico (metformina) día 15, quincena",
+    "p50": 11.11,
+    "p90": 21.61,
+    "advertencias": []
+  },
+  {
+    "escenario": "Crónico (metformina) día 8",
+    "p50": 8.98,
+    "p90": 16.93,
+    "advertencias": []
+  }
+]

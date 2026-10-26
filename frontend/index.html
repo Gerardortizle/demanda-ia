@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DEMANDA-IA · Reabasto por sucursal</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%230f6e5c'/><path d='M7 3h2v4h4v2H9v4H7V9H3V7h4z' fill='white'/></svg>">
+</head>
+<body>
+  <header class="barra">
+    <div>
+      <h1>DEMANDA-IA</h1>
+      <p class="sub">Pronóstico de demanda y pedido sugerido · Farmacias Occidente Salud</p>
+    </div>
+    <p id="estado" class="estado" role="status">Conectando con la API…</p>
+  </header>
+
+  <main class="rejilla">
+    <form id="form" class="panel" novalidate>
+      <h2>Datos del pedido</h2>
+      <label>Sucursal
+        <select id="sucursal" required></select>
+      </label>
+      <label>Producto
+        <select id="sku" required></select>
+      </label>
+      <div class="dos">
+        <label>Primer día a pronosticar
+          <input id="fecha" type="date" required>
+        </label>
+        <label>Días a cubrir
+          <input id="horizonte" type="number" min="1" max="14" value="7" required>
+        </label>
+      </div>
+      <div class="dos">
+        <label>Existencia en anaquel
+          <input id="existencia" type="number" min="0" step="1" value="20" required>
+        </label>
+        <label>Precio (opcional)
+          <input id="precio" type="number" min="0.01" step="0.01" placeholder="precio de lista">
+        </label>
+      </div>
+      <label class="check"><input id="promo" type="checkbox"> Producto en promoción durante el periodo</label>
+      <p class="nota">Las ventas de los últimos 28 días se cargan del historial de la sucursal (simulado en esta demo).</p>
+      <button type="submit" id="btn">Calcular pedido</button>
+      <p id="error" class="error" role="alert" hidden></p>
+    </form>
+
+    <section class="panel resultado" aria-live="polite">
+      <div id="vacio" class="vacio">
+        <p>Elige sucursal y producto y presiona <strong>Calcular pedido</strong>.</p>
+      </div>
+      <div id="salida" hidden>
+        <div class="pedido">
+          <div>
+            <p class="etq">Pedido sugerido</p>
+            <p class="cifra"><span id="pedido">0</span> <small>piezas</small></p>
+          </div>
+          <dl class="desglose">
+            <div><dt>Demanda esperada</dt><dd id="esperada"></dd></div>
+            <div><dt>Stock de seguridad</dt><dd id="seguridad"></dd></div>
+            <div><dt>Existencia actual</dt><dd id="exist"></dd></div>
+          </dl>
+        </div>
+        <ul id="avisos" class="avisos"></ul>
+        <figure>
+          <svg id="grafica" role="img" aria-label="Ventas recientes y pronóstico"></svg>
+          <figcaption>
+            <span class="ley hist"></span> ventas reales (28 días)
+            <span class="ley p50"></span> pronóstico P50
+            <span class="ley p90"></span> banda hasta P90
+          </figcaption>
+        </figure>
+        <div class="tabla-cont">
+          <table>
+            <thead><tr><th>Fecha</th><th>P50</th><th>P90</th></tr></thead>
+            <tbody id="tabla"></tbody>
+          </table>
+        </div>
+        <p class="meta" id="meta"></p>
+      </div>
+    </section>
+  </main>
+  <footer class="pie">API REST: <a href="/docs">/docs</a> · <a href="/api/v1/modelo">/api/v1/modelo</a></footer>
+  <script src="app.js"></script>
+</body>
+</html>

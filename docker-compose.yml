@@ -1,0 +1,13 @@
+# Levanta DEMANDA-IA localmente:  docker compose up --build
+services:
+  api:
+    build:
+      context: .
+      target: final
+    image: demanda-ia:1.0.0
+    container_name: demanda-ia
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.example
+    restart: unless-stopped

@@ -1,0 +1,4 @@
+POST /pronostico (1 registro)      n=200  p50=    9.6 ms  p95=   14.1 ms  max=   16.4 ms
+POST /pronostico/lote (1000)       n=20   p50=   50.9 ms  p95=   97.8 ms  max=  114.8 ms
+POST /reabasto (14 dias)           n=50   p50=   96.1 ms  p95=  135.5 ms  max=  140.9 ms
+Corrida nocturna completa (4 200 pronosticos en lotes de 1000): 0.22 s

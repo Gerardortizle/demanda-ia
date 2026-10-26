@@ -1,0 +1,65 @@
+# Integración continua de DEMANDA-IA
+# 1) pruebas unitarias/funcionales con pytest
+# 2) construcción de la imagen, arranque del contenedor y prueba de humo
+# 3) en la rama main, publicación de la imagen en GitHub Container Registry (GHCR)
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: PYTHONPATH=src python -m pytest -v --junitxml=reports/junit.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultados-pytest
+          path: reports/junit.xml
+
+  contenedor:
+    needs: pruebas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construir imagen
+        run: docker build -t demanda-ia:${{ github.sha }} .
+      - name: Ejecutar contenedor
+        run: docker run -d --name demanda -p 8000:8000 demanda-ia:${{ github.sha }}
+      - name: Esperar healthcheck
+        run: |
+          for i in $(seq 1 30); do
+            estado=$(docker inspect --format '{{.State.Health.Status}}' demanda)
+            echo "intento $i: $estado"
+            [ "$estado" = "healthy" ] && exit 0
+            sleep 3
+          done
+          docker logs demanda; exit 1
+      - name: Prueba de humo
+        run: ./scripts/smoke_test.sh http://localhost:8000
+      - name: Logs del contenedor
+        if: always()
+        run: docker logs demanda
+      - name: Publicar en GHCR
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          IMG=ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker tag demanda-ia:${{ github.sha }} $IMG:1.0.0
+          docker tag demanda-ia:${{ github.sha }} $IMG:latest
+          docker push $IMG:1.0.0
+          docker push $IMG:latest

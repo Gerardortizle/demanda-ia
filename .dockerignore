@@ -1,0 +1,14 @@
+.git
+.github
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+data/
+docs/
+reports/figuras/
+reports/*.csv.gz
+*.md
+!README.md
+.env

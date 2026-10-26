@@ -1,0 +1,174 @@
+[
+  {
+    "conjunto": "prueba_temporal",
+    "filas": 110400,
+    "modelo_p50": {
+      "mae": 3.3779776653035425,
+      "rmse": 5.36056012359971,
+      "wape_pct": 46.18918820916567,
+      "sesgo_pct": -11.379300449909252
+    },
+    "baseline_lag7": {
+      "mae": 4.889528985507247,
+      "rmse": 7.675724013435787,
+      "wape_pct": 66.8575689192637,
+      "sesgo_pct": -1.281902020574837
+    },
+    "baseline_media28": {
+      "mae": 3.585398550724637,
+      "rmse": 5.608701575820157,
+      "wape_pct": 49.025382898560046,
+      "sesgo_pct": -3.0552617433372062
+    },
+    "oraculo_media_teorica": {
+      "mae": 3.3826236246364996,
+      "rmse": 5.178986720736146,
+      "wape_pct": 46.25271529883422,
+      "sesgo_pct": 1.2458198558203946
+    },
+    "cobertura_p90_pct": 88.78985507246377,
+    "semanal": {
+      "modelo_p50": {
+        "mae": 9.681509521536093,
+        "rmse": 15.062385510822482,
+        "wape_pct": 20.144980017414838,
+        "sesgo_pct": -11.379300449909252
+      },
+      "baseline_lag7": {
+        "mae": 13.81154761904762,
+        "rmse": 21.79906616610642,
+        "wape_pct": 28.7386331828079,
+        "sesgo_pct": -1.281902020574837
+      },
+      "oraculo_media_teorica": {
+        "mae": 8.783234680554294,
+        "rmse": 13.2352815384321,
+        "wape_pct": 18.275878026504053,
+        "sesgo_pct": 1.2458198558203946
+      }
+    },
+    "por_categoria": {
+      "analgesicos": {
+        "wape_modelo_pct": 43.57419536891966,
+        "wape_lag7_pct": 63.05760475612044,
+        "cobertura_p90_pct": 88.53804347826087
+      },
+      "antigripales": {
+        "wape_modelo_pct": 43.990961749497544,
+        "wape_lag7_pct": 62.68521490624062,
+        "cobertura_p90_pct": 88.14673913043478
+      },
+      "sueros_antidiarreicos": {
+        "wape_modelo_pct": 46.6555612882416,
+        "wape_lag7_pct": 68.52394796491573,
+        "cobertura_p90_pct": 89.91847826086956
+      },
+      "cronicos": {
+        "wape_modelo_pct": 46.09121139441989,
+        "wape_lag7_pct": 68.81891785746654,
+        "cobertura_p90_pct": 88.90760869565217
+      },
+      "vitaminas": {
+        "wape_modelo_pct": 50.005607541282046,
+        "wape_lag7_pct": 71.68379701878061,
+        "cobertura_p90_pct": 88.73188405797102
+      },
+      "dermocosmetica": {
+        "wape_modelo_pct": 53.126160096872646,
+        "wape_lag7_pct": 76.16608544027899,
+        "cobertura_p90_pct": 89.50407608695652
+      },
+      "infantil": {
+        "wape_modelo_pct": 50.02044058935351,
+        "wape_lag7_pct": 71.425627168325,
+        "cobertura_p90_pct": 88.35326086956522
+      }
+    }
+  },
+  {
+    "conjunto": "sucursales_no_vistas",
+    "filas": 27600,
+    "modelo_p50": {
+      "mae": 3.684050542361213,
+      "rmse": 6.70602576030524,
+      "wape_pct": 45.78912774830766,
+      "sesgo_pct": -14.175504173046873
+    },
+    "baseline_lag7": {
+      "mae": 5.282826086956522,
+      "rmse": 9.211437439951753,
+      "wape_pct": 65.66033657418457,
+      "sesgo_pct": -1.2185840827520367
+    },
+    "baseline_media28": {
+      "mae": 3.8739091614906833,
+      "rmse": 6.795833371868727,
+      "wape_pct": 48.14888380091185,
+      "sesgo_pct": -2.743374246587328
+    },
+    "oraculo_media_teorica": {
+      "mae": 3.664168946295621,
+      "rmse": 6.3094348932441475,
+      "wape_pct": 45.5420190478108,
+      "sesgo_pct": 1.3339283827997566
+    },
+    "cobertura_p90_pct": 88.3876811594203,
+    "semanal": {
+      "modelo_p50": {
+        "mae": 11.36351698061429,
+        "rmse": 20.43055442821833,
+        "wape_pct": 21.492640003683682,
+        "sesgo_pct": -14.175504173046875
+      },
+      "baseline_lag7": {
+        "mae": 14.69047619047619,
+        "rmse": 24.896347025981445,
+        "wape_pct": 27.78515813222493,
+        "sesgo_pct": -1.2185840827520367
+      },
+      "oraculo_media_teorica": {
+        "mae": 9.58911761452774,
+        "rmse": 15.989684229811008,
+        "wape_pct": 18.136590387783766,
+        "sesgo_pct": 1.3339283827997566
+      }
+    },
+    "por_categoria": {
+      "analgesicos": {
+        "wape_modelo_pct": 43.257858057967155,
+        "wape_lag7_pct": 62.47677124866942,
+        "cobertura_p90_pct": 88.41304347826086
+      },
+      "antigripales": {
+        "wape_modelo_pct": 43.24816788208428,
+        "wape_lag7_pct": 61.47312566804092,
+        "cobertura_p90_pct": 88.04347826086956
+      },
+      "sueros_antidiarreicos": {
+        "wape_modelo_pct": 45.62538994369065,
+        "wape_lag7_pct": 66.71403685706427,
+        "cobertura_p90_pct": 90.6159420289855
+      },
+      "cronicos": {
+        "wape_modelo_pct": 46.806441249248785,
+        "wape_lag7_pct": 67.5464811827246,
+        "cobertura_p90_pct": 88.15217391304347
+      },
+      "vitaminas": {
+        "wape_modelo_pct": 49.32143299326344,
+        "wape_lag7_pct": 70.29291463253728,
+        "cobertura_p90_pct": 88.1159420289855
+      },
+      "dermocosmetica": {
+        "wape_modelo_pct": 52.71963548209764,
+        "wape_lag7_pct": 75.25353616226315,
+        "cobertura_p90_pct": 88.75
+      },
+      "infantil": {
+        "wape_modelo_pct": 49.10389450513922,
+        "wape_lag7_pct": 69.23705610722897,
+        "cobertura_p90_pct": 87.47826086956522
+      }
+    }
+  }
+]
