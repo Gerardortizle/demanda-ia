@@ -2,7 +2,7 @@
 
 Pronóstico de demanda diaria por SKU y sucursal para **Farmacias Occidente Salud** (140 sucursales en el occidente de México). El sistema calcula cuántas piezas conviene pedir para cubrir de 1 a 14 días y entrega el resultado por API REST y por una interfaz web sencilla.
 
-Proyecto Fase II de la materia *Gestión de proyectos de inteligencia artificial*, Maestría en Ciencia de Datos, Universidad Tecmilenio.
+Proyecto Fase II de la materia *Gestión de proyectos de inteligencia artificial*, Master Inteligencia Artificial, Universidad Tecmilenio.
 
 ![Arquitectura](reports/figuras/arquitectura.png)
 
@@ -21,7 +21,7 @@ Los datos son sintéticos. El simulador (`src/demanda_ia/data.py`) reproduce est
 ## Inicio rápido con Docker
 
 ```bash
-git clone https://github.com/TU_USUARIO/demanda-ia.git
+git clone https://github.com/gerardortizle/demanda-ia.git
 cd demanda-ia
 docker build -t demanda-ia:1.0.0 .
 docker run -d --name demanda -p 8000:8000 demanda-ia:1.0.0
