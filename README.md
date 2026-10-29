@@ -96,7 +96,6 @@ demanda-ia/
 ├── tests/                 pruebas funcionales, casos extremos y del modelo
 ├── scripts/               smoke_test.sh/.ps1, benchmark.py, generar_reportes.py, diagrama_arquitectura.py
 ├── reports/               métricas, sensibilidad, resultados de pruebas, figuras
-├── docs/                  manual de despliegue y documento de validación (Word y PDF)
 ├── .github/workflows/     ci.yml
 ├── Dockerfile, docker-compose.yml, .dockerignore, .env.example
 └── requirements.txt, requirements-dev.txt
@@ -104,7 +103,7 @@ demanda-ia/
 
 ## Despliegue en la nube
 
-La estrategia elegida es contenedor sobre PaaS (Google Cloud Run), con la imagen publicada por el CI en GitHub Container Registry. El paso a paso, los requerimientos y las alternativas (Render, Azure Container Apps) están en `docs/Manual_Despliegue_DEMANDA-IA.docx`.
+La estrategia elegida es contenedor sobre PaaS (Google Cloud Run), con la imagen publicada por el CI en GitHub Container Registry. El paso a paso, los requerimientos y las alternativas (Render, Azure Container Apps) están en `Fase II. Manual de despliegue DEMANDA-IA.docx`.
 
 ## Limitaciones conocidas
 
