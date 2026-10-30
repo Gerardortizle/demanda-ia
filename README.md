@@ -62,9 +62,13 @@ Para correr la suite de pruebas dentro del build: `docker build --target pruebas
 Ejemplo:
 
 ```bash
+Linux/macOS (bash)
 curl -X POST http://localhost:8000/api/v1/pronostico \
   -H "Content-Type: application/json" \
   -d '{"sucursal_id":"SUC-001","sku":"SKU-0005","fecha":"2026-12-15","lag_7":12,"media_7":11,"media_28":10}'
+
+Windows (PowerShell)
+curl.exe -X POST "http://localhost:8000/api/v1/pronostico" -H "Content-Type: application/json" -d '{\"sucursal_id\":\"SUC-001\",\"sku\":\"SKU-0005\",\"fecha\":\"2026-12-15\",\"lag_7\":12,\"media_7\":11,\"media_28\":10}'
 ```
 
 ```json
