@@ -27,6 +27,8 @@ docker build -t demanda-ia:1.0.0 .
 docker run -d --name demanda -p 8000:8000 demanda-ia:1.0.0
 docker ps                      # STATUS debe decir (healthy) después de ~20 s
 ./scripts/smoke_test.sh        # en Windows: .\scripts\smoke_test.ps1
+
+En caso de que falle este comando usar:
 powershell -ExecutionPolicy Bypass -File .\scripts\smoke_test.ps1
 
 > **Nota (Windows):** PowerShell bloquea por defecto la ejecución de scripts `.ps1`.
