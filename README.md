@@ -16,7 +16,7 @@ Proyecto Fase II de la materia *Gestión de proyectos de inteligencia artificial
 | Contenedor | Docker multi-etapa sobre `python:3.12-slim` | Usuario sin privilegios, `HEALTHCHECK`, puerto configurable con `$PORT` |
 | CI/CD | GitHub Actions | pytest, build de imagen, healthcheck, prueba de humo y publicación en GHCR |
 
-Los datos son sintéticos. El simulador (`src/demanda_ia/data.py`) reproduce estacionalidad por categoría, quincenas, festivos de la LFT, promociones, elasticidad al precio y quiebres de stock.
+Los datos son sintéticos. El simulador (`src/demanda_ia/data.py`) reproduce estacionalidad por categoría, quincenas, festivos de la LFT más 24 y 31 de diciembre, promociones, elasticidad al precio y quiebres de stock.
 
 ## Inicio rápido con Docker
 
@@ -133,9 +133,11 @@ La estrategia elegida es contenedor sobre PaaS (Google Cloud Run), con la imagen
 ## Limitaciones conocidas
 
 - Datos sintéticos: las métricas validan el pipeline, no el desempeño con ventas reales.
-- El P50 subestima la suma semanal en torno a 11 %, porque la mediana de una venta sesgada queda por debajo de la media. El stock de seguridad lo compensa en el pedido sugerido.
+- El P50 subestima la suma semanal: −11.4 % en la prueba temporal y −14.2 % en las sucursales no vistas, porque la mediana de una venta sesgada queda por debajo de la media.
+  El stock de seguridad lo compensa en el pedido sugerido.
 - El modelo no vio precios por arriba del de lista. La API acota el precio y lo avisa en `advertencias`.
 - La API no tiene autenticación. En producción debe ir detrás de IAM o de un API gateway.
+- El calendario de festivos no incluye el 1 de octubre de los años de transmisión del Poder Ejecutivo Federal (por ejemplo, 2024), que sí es descanso obligatorio según el art. 74 de la LFT.
 
 ## Autor
 
