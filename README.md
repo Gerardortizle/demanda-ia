@@ -100,6 +100,19 @@ demanda-ia/
 ├── Dockerfile, docker-compose.yml, .dockerignore, .env.example
 └── requirements.txt, requirements-dev.txt
 ```
+### Modelo entrenado
+
+El modelo de DEMANDA-IA se encuentra en la carpeta `models/`:
+
+| Archivo | Descripción |
+|---|---|
+| `demanda_ia_v1.joblib` | Modelo entrenado y serializado con `joblib`. Es el archivo que carga la API al iniciar. |
+| `demanda_ia_v1.json` | Metadata del modelo: [orden de las variables de entrada, versión, métricas de evaluación y fecha de entrenamiento]. |
+
+**¿Por qué `.joblib` y no `.pkl`?** El tutorial de contenerización contempla varios formatos de serialización (`.pkl`, `.joblib`, `.h5`, `.pt`, `.onnx`). Se eligió `joblib` porque es el formato recomendado por 
+scikit-learn: almacena de forma más eficiente los arreglos de NumPy que forman el modelo y produce archivos más ligeros y rápidos de cargar. Funcionalmente cumple el mismo papel que el `model.pkl` del tutorial.
+
+> **Importante:** el modelo debe cargarse con la misma versión de scikit-learn con la que fue entrenado (`scikit-learn==[1.x.x]`, fijada en `requirements.txt`). Usar otra versión puede producir advertencias de incompatibilidad o errores al deserializar.
 
 ## Despliegue en la nube
 
