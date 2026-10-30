@@ -14,6 +14,13 @@ $h = Invoke-RestMethod "$Url/api/v1/historial?sucursal_id=SUC-001&sku=SKU-0009&h
 $r = @{ sucursal_id="SUC-001"; sku="SKU-0009"; fecha_inicio="2026-11-02"; horizonte_dias=7; existencia_actual=15; historial_ventas=$h.ventas } | ConvertTo-Json
 Revisar "POST /api/v1/reabasto" { Invoke-RestMethod "$Url/api/v1/reabasto" -Method Post -ContentType "application/json" -Body $r } |
   Select-Object sucursal_id, sku, demanda_esperada, stock_seguridad, pedido_sugerido | Format-List
+Revisar "GET /api/v1/modelo" { (Invoke-RestMethod "$Url/api/v1/modelo").version } | Out-Null
+Revisar "GET / (frontend)" { Invoke-WebRequest "$Url/" -UseBasicParsing | Out-Null }
+Revisar "GET /docs (Swagger)" { Invoke-WebRequest "$Url/docs" -UseBasicParsing | Out-Null }
+$lote = @{ registros = @(
+  @{ sucursal_id="SUC-001"; sku="SKU-0001"; fecha="2026-11-04"; lag_7=14; media_7=13; media_28=13 },
+  @{ sucursal_id="SUC-002"; sku="SKU-0012"; fecha="2026-11-15"; lag_7=8; media_7=7; media_28=7 }) } | ConvertTo-Json -Depth 3
+Revisar "POST /api/v1/pronostico/lote" { Invoke-RestMethod "$Url/api/v1/pronostico/lote" -Method Post -ContentType "application/json" -Body $lote } | Select-Object total | Format-List
 try {
   $malo = @{ sucursal_id="SUC-001"; sku="SKU-9999"; fecha="2026-12-15"; lag_7=1; media_7=1; media_28=1 } | ConvertTo-Json
   Invoke-RestMethod "$Url/api/v1/pronostico" -Method Post -ContentType "application/json" -Body $malo | Out-Null
