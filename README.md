@@ -128,7 +128,7 @@ scikit-learn: almacena de forma más eficiente los arreglos de NumPy que forman 
 
 ## Despliegue en la nube
 
-La estrategia elegida es contenedor sobre PaaS (Google Cloud Run), con la imagen publicada por el CI en GitHub Container Registry. El paso a paso, los requerimientos y las alternativas (Render, Azure Container Apps) están en `Fase II. Manual de despliegue DEMANDA-IA JGOL.docx`.
+La estrategia elegida es contenedor sobre PaaS (Google Cloud Run), con la imagen publicada por el CI en GitHub Container Registry. El paso a paso, los requerimientos y las alternativas (Render, Azure Container Apps) están en `docs/Fase II. Manual de despliegue DEMANDA-IA JGOL.docx`.
 
 ## Limitaciones conocidas
 
