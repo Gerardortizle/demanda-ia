@@ -27,7 +27,7 @@ docker build -t demanda-ia:1.0.0 .
 docker run -d --name demanda -p 8000:8000 demanda-ia:1.0.0
 docker ps                      # STATUS debe decir (healthy) después de ~20 s
 ./scripts/smoke_test.sh        # en Windows: .\scripts\smoke_test.ps1
-
+```
 En caso de que falle este comando usar:
 powershell -ExecutionPolicy Bypass -File .\scripts\smoke_test.ps1
 
@@ -35,7 +35,6 @@ powershell -ExecutionPolicy Bypass -File .\scripts\smoke_test.ps1
 > El comando : powershell -ExecutionPolicy Bypass -File .\scripts\smoke_test.ps1 usa
 > `-ExecutionPolicy Bypass` para ejecutar únicamente este script sin modificar la 
 > configuración del sistema.
-```
 
 Luego abre:
 
@@ -96,7 +95,7 @@ En PowerShell, en lugar de `PYTHONPATH=src ...` usa `$env:PYTHONPATH="src"` ante
 | Prueba temporal (oct-dic 2025) | 46.2 % | 66.9 % | 49.0 % | 20.1 % | 88.8 % |
 | 10 sucursales no vistas | 45.8 % | 65.7 % | 48.1 % | 21.5 % | 88.4 % |
 
-El WAPE diario parece alto, pero coincide con el de un "oráculo" que conoce la media real del simulador (46.3 %). Ese error viene del ruido propio de vender pocas piezas por día. A nivel semanal, que es el horizonte que importa para el pedido, el error baja a 20 %. Detalle completo en `docs/Documento_Validacion_Pruebas_DEMANDA-IA.docx`.
+El WAPE diario parece alto, pero coincide con el de un "oráculo" que conoce la media real del simulador (46.3 %). Ese error viene del ruido propio de vender pocas piezas por día. A nivel semanal, que es el horizonte que importa para el pedido, el error baja a 20 %. Detalle completo en `docs/Fase II. Documento de validacion de pruebas DEMANDA-IA JGOL.docx`.
 
 ## Estructura
 
@@ -108,6 +107,7 @@ demanda-ia/
 ├── tests/                 pruebas funcionales, casos extremos y del modelo
 ├── scripts/               smoke_test.sh/.ps1, benchmark.py, generar_reportes.py, diagrama_arquitectura.py
 ├── reports/               métricas, sensibilidad, resultados de pruebas, figuras
+├── docs/                  manual de despliegue y documento de validación
 ├── .github/workflows/     ci.yml
 ├── Dockerfile, docker-compose.yml, .dockerignore, .env.example
 └── requirements.txt, requirements-dev.txt
