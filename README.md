@@ -119,7 +119,7 @@ El modelo de DEMANDA-IA se encuentra en la carpeta `models/`:
 | Archivo | Descripción |
 |---|---|
 | `demanda_ia_v1.joblib` | Modelo entrenado y serializado con `joblib`. Es el archivo que carga la API al iniciar. |
-| `demanda_ia_v1.json` | Metadata del modelo: orden de las variables de entrada, versión, métricas de evaluación y fecha de entrenamiento. |
+| `demanda_ia_v1.json` | Metadatos del modelo: nombre, versión, algoritmo, lista ordenada de las 15 variables, versión de scikit-learn, fecha de entrenamiento, periodos de entrenamiento y prueba, sucursales de entrenamiento y holdout, y métricas de evaluación |
 
 **¿Por qué `.joblib` y no `.pkl`?** El tutorial de contenerización contempla varios formatos de serialización (`.pkl`, `.joblib`, `.h5`, `.pt`, `.onnx`). Se eligió `joblib` porque es el formato recomendado por 
 scikit-learn: almacena de forma más eficiente los arreglos de NumPy que forman el modelo y produce archivos más ligeros y rápidos de cargar. Funcionalmente cumple el mismo papel que el `model.pkl` del tutorial.
