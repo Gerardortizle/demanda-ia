@@ -25,7 +25,7 @@ git clone https://github.com/gerardortizle/demanda-ia.git
 cd demanda-ia
 docker build -t demanda-ia:1.0.0 .
 docker run -d --name demanda -p 8000:8000 demanda-ia:1.0.0
-docker ps                      # STATUS debe decir (healthy) después de ~20 s
+docker ps                      # STATUS debe decir (healthy) después de ~30 a 60 s
 ./scripts/smoke_test.sh        # en Windows: .\scripts\smoke_test.ps1
 ```
 En caso de que falle este comando usar:
@@ -95,7 +95,7 @@ En PowerShell, en lugar de `PYTHONPATH=src ...` usa `$env:PYTHONPATH="src"` ante
 | Prueba temporal (oct-dic 2025) | 46.2 % | 66.9 % | 49.0 % | 20.1 % | 88.8 % |
 | 10 sucursales no vistas | 45.8 % | 65.7 % | 48.1 % | 21.5 % | 88.4 % |
 
-El WAPE diario parece alto, pero coincide con el de un "oráculo" que conoce la media real del simulador (46.3 %). Ese error viene del ruido propio de vender pocas piezas por día. A nivel semanal, que es el horizonte que importa para el pedido, el error baja a 20 %. Detalle completo en `docs/Fase II. Documento de validacion de pruebas DEMANDA-IA JGOL.docx`.
+El WAPE diario parece alto, pero coincide con el de un "oráculo" que conoce la media real del simulador (46.3 %). Ese error viene del ruido propio de vender pocas piezas por día. A nivel semanal, que es el horizonte que importa para el pedido, el error baja a 20 %. Detalle completo en `docs/Fase II. Documento de validación de pruebas DEMANDA-IA JGOL.docx`.
 
 ## Estructura
 
@@ -128,7 +128,7 @@ scikit-learn: almacena de forma más eficiente los arreglos de NumPy que forman 
 
 ## Despliegue en la nube
 
-La estrategia elegida es contenedor sobre PaaS (Google Cloud Run), con la imagen publicada por el CI en GitHub Container Registry. El paso a paso, los requerimientos y las alternativas (Render, Azure Container Apps) están en `Fase II. Manual de despliegue DEMANDA-IA.docx`.
+La estrategia elegida es contenedor sobre PaaS (Google Cloud Run), con la imagen publicada por el CI en GitHub Container Registry. El paso a paso, los requerimientos y las alternativas (Render, Azure Container Apps) están en `docs/Fase II. Manual de despliegue DEMANDA-IA JGOL.docx`.
 
 ## Limitaciones conocidas
 
