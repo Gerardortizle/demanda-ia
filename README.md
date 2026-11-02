@@ -130,6 +130,8 @@ scikit-learn: almacena de forma más eficiente los arreglos de NumPy que forman 
 
 La estrategia elegida es contenedor sobre PaaS (Google Cloud Run), con la imagen publicada por el CI en GitHub Container Registry. El paso a paso, los requerimientos y las alternativas (Render, Azure Container Apps) están en `docs/Fase II. Manual de despliegue DEMANDA-IA JGOL.docx`.
 
+Demo en línea: https://demanda-ia-874563229975.us-central1.run.app (documentación de la API en https://demanda-ia-874563229975.us-central1.run.app/docs).
+
 ## Limitaciones conocidas
 
 - Datos sintéticos: las métricas validan el pipeline, no el desempeño con ventas reales.
