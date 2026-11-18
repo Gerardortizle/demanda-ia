@@ -1,0 +1,39 @@
+{
+  "version_campeon": "1.1.0",
+  "comparacion": [
+    {
+      "conjunto": "prueba_temporal",
+      "campeon": {
+        "wape_semanal_pct": 17.79021074177631,
+        "sesgo_semanal_pct": -2.858811649546579,
+        "cobertura_p90_pct": 88.78985507246377,
+        "fill_rate_pct": 97.78434729332797,
+        "excedente_pct": 24.371366490862094
+      },
+      "retador": {
+        "wape_semanal_pct": 17.79021074177631,
+        "sesgo_semanal_pct": -2.858811649546579,
+        "cobertura_p90_pct": 88.78985507246377,
+        "fill_rate_pct": 97.78434729332797,
+        "excedente_pct": 24.371366490862094
+      }
+    },
+    {
+      "conjunto": "sucursales_no_vistas",
+      "campeon": {
+        "wape_semanal_pct": 19.298241183291335,
+        "sesgo_semanal_pct": -7.767416675902359,
+        "cobertura_p90_pct": 88.3876811594203,
+        "fill_rate_pct": 96.83334320753599,
+        "excedente_pct": 21.20879988940893
+      },
+      "retador": {
+        "wape_semanal_pct": 19.298241183291335,
+        "sesgo_semanal_pct": -7.767416675902359,
+        "cobertura_p90_pct": 88.3876811594203,
+        "fill_rate_pct": 96.83334320753599,
+        "excedente_pct": 21.20879988940893
+      }
+    }
+  ]
+}

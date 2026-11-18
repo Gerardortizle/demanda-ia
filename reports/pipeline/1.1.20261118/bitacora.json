@@ -1,0 +1,46 @@
+{
+  "version": "1.1.20261118",
+  "commit": "593412e",
+  "etapas": [
+    {
+      "etapa": "validacion_datos",
+      "segundos": 5.7,
+      "aprobado": true,
+      "filas_entrenamiento": 733200,
+      "huella": "8e5e72b7995f362c"
+    },
+    {
+      "etapa": "entrenamiento",
+      "segundos": 61.2,
+      "modelos": [
+        "p50",
+        "p90",
+        "media"
+      ]
+    },
+    {
+      "etapa": "evaluacion",
+      "segundos": 63.7,
+      "prueba_temporal": 17.79,
+      "sucursales_no_vistas": 19.3
+    },
+    {
+      "etapa": "compuertas",
+      "segundos": 63.7,
+      "aprobado": true,
+      "fallidas": []
+    },
+    {
+      "etapa": "comparacion",
+      "segundos": 66.3,
+      "campeon": "1.1.0"
+    },
+    {
+      "etapa": "registro",
+      "segundos": 69.2,
+      "etapa_modelo": "promovido a campeon"
+    }
+  ],
+  "aprobado": true,
+  "registro": "models/registro.json"
+}
