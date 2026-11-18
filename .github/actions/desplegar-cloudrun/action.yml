@@ -1,0 +1,59 @@
+# Acción compuesta reutilizada por staging y producción en cd.yml
+name: desplegar-cloudrun
+description: Copia la imagen de GHCR a Artifact Registry, aplica el manifiesto, prueba y regresa si falla
+inputs:
+  manifiesto: {required: true, description: "Ruta del manifiesto Knative"}
+  servicio: {required: true, description: "Nombre del servicio en Cloud Run"}
+  credenciales: {required: true, description: "JSON de la cuenta de servicio"}
+  proyecto: {required: true, description: "GCP_PROJECT_ID"}
+  region: {required: true, description: "Región"}
+  token-ghcr: {required: true, description: "Token para leer GHCR"}
+runs:
+  using: composite
+  steps:
+    - uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ inputs.credenciales }}
+    - uses: google-github-actions/setup-gcloud@v2
+    - name: Resolver versión deseada
+      id: v
+      shell: bash
+      run: |
+        TAG=$(grep -oP 'demanda-ia/api:\K[0-9][^"\s]*' "${{ inputs.manifiesto }}")
+        echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        PREV=$(gcloud run services describe ${{ inputs.servicio }} --region ${{ inputs.region }} \
+               --format='value(status.latestReadyRevisionName)' 2>/dev/null || true)
+        echo "previa=$PREV" >> "$GITHUB_OUTPUT"
+        echo "Versión deseada: $TAG · revisión actual: ${PREV:-ninguna}"
+    - name: Copiar imagen de GHCR a Artifact Registry
+      shell: bash
+      run: |
+        AR=${{ inputs.region }}-docker.pkg.dev/${{ inputs.proyecto }}/demanda-ia/api:${{ steps.v.outputs.tag }}
+        if gcloud artifacts docker images describe "$AR" >/dev/null 2>&1; then echo "Ya existe $AR"; exit 0; fi
+        echo "${{ inputs.token-ghcr }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+        gcloud auth configure-docker ${{ inputs.region }}-docker.pkg.dev --quiet
+        SRC=ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]'):${{ steps.v.outputs.tag }}
+        docker pull "$SRC" && docker tag "$SRC" "$AR" && docker push "$AR"
+    - name: Aplicar estado deseado
+      shell: bash
+      env:
+        GCP_PROJECT_ID: ${{ inputs.proyecto }}
+      run: |
+        envsubst '${GCP_PROJECT_ID}' < "${{ inputs.manifiesto }}" > /tmp/servicio.yaml
+        gcloud run services replace /tmp/servicio.yaml --region ${{ inputs.region }}
+        gcloud run services add-iam-policy-binding ${{ inputs.servicio }} --region ${{ inputs.region }} \
+          --member=allUsers --role=roles/run.invoker >/dev/null   # demo académica; en producción real: solo la cuenta del ERP
+    - name: Prueba de humo y regreso automático
+      shell: bash
+      run: |
+        URL=$(gcloud run services describe ${{ inputs.servicio }} --region ${{ inputs.region }} --format='value(status.url)')
+        if ./scripts/smoke_test.sh "$URL"; then
+          echo "### ${{ inputs.servicio }} desplegado: $URL (imagen ${{ steps.v.outputs.tag }})" >> "$GITHUB_STEP_SUMMARY"
+        else
+          if [ -n "${{ steps.v.outputs.previa }}" ]; then
+            gcloud run services update-traffic ${{ inputs.servicio }} --region ${{ inputs.region }} \
+              --to-revisions ${{ steps.v.outputs.previa }}=100
+            echo "### Prueba de humo fallida: tráfico regresado a ${{ steps.v.outputs.previa }}" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit 1
+        fi

@@ -1,0 +1,148 @@
+{
+  "modelo_version": "1.1.0",
+  "escenario": "base",
+  "descripcion_escenario": "Operación normal un año después del entrenamiento",
+  "ventana": [
+    "2026-08-03",
+    "2026-10-25"
+  ],
+  "sucursales": 30,
+  "filas": 75600,
+  "resumen": {
+    "wape_semanal_pct": 18.96,
+    "sesgo_semanal_pct": -6.04,
+    "cobertura_p90_ultimas4_pct": 87.81
+  },
+  "por_semana": [
+    {
+      "semana": "2026-08-03",
+      "wape_semanal_pct": 19.23,
+      "sesgo_semanal_pct": -4.5,
+      "cobertura_p90_pct": 89.03,
+      "fill_rate_pct": 97.85
+    },
+    {
+      "semana": "2026-08-10",
+      "wape_semanal_pct": 19.36,
+      "sesgo_semanal_pct": -3.96,
+      "cobertura_p90_pct": 88.63,
+      "fill_rate_pct": 97.43
+    },
+    {
+      "semana": "2026-08-17",
+      "wape_semanal_pct": 19.03,
+      "sesgo_semanal_pct": -6.35,
+      "cobertura_p90_pct": 88.49,
+      "fill_rate_pct": 97.03
+    },
+    {
+      "semana": "2026-08-24",
+      "wape_semanal_pct": 19.26,
+      "sesgo_semanal_pct": -6.2,
+      "cobertura_p90_pct": 88.56,
+      "fill_rate_pct": 96.95
+    },
+    {
+      "semana": "2026-08-31",
+      "wape_semanal_pct": 19.34,
+      "sesgo_semanal_pct": -7.1,
+      "cobertura_p90_pct": 87.81,
+      "fill_rate_pct": 97.18
+    },
+    {
+      "semana": "2026-09-07",
+      "wape_semanal_pct": 19.12,
+      "sesgo_semanal_pct": -6.22,
+      "cobertura_p90_pct": 88.3,
+      "fill_rate_pct": 97.32
+    },
+    {
+      "semana": "2026-09-14",
+      "wape_semanal_pct": 19.86,
+      "sesgo_semanal_pct": -5.47,
+      "cobertura_p90_pct": 89.25,
+      "fill_rate_pct": 96.95
+    },
+    {
+      "semana": "2026-09-21",
+      "wape_semanal_pct": 17.77,
+      "sesgo_semanal_pct": -7.27,
+      "cobertura_p90_pct": 88.48,
+      "fill_rate_pct": 97.52
+    },
+    {
+      "semana": "2026-09-28",
+      "wape_semanal_pct": 18.83,
+      "sesgo_semanal_pct": -6.96,
+      "cobertura_p90_pct": 87.76,
+      "fill_rate_pct": 96.92
+    },
+    {
+      "semana": "2026-10-05",
+      "wape_semanal_pct": 18.36,
+      "sesgo_semanal_pct": -4.48,
+      "cobertura_p90_pct": 88.79,
+      "fill_rate_pct": 97.43
+    },
+    {
+      "semana": "2026-10-12",
+      "wape_semanal_pct": 18.72,
+      "sesgo_semanal_pct": -6.19,
+      "cobertura_p90_pct": 87.54,
+      "fill_rate_pct": 97.19
+    },
+    {
+      "semana": "2026-10-19",
+      "wape_semanal_pct": 18.7,
+      "sesgo_semanal_pct": -7.52,
+      "cobertura_p90_pct": 87.14,
+      "fill_rate_pct": 96.93
+    }
+  ],
+  "psi": {
+    "precio_relativo": 0.0,
+    "en_promocion": 0.0001,
+    "dia_semana": 0.0,
+    "es_quincena": 0.0031,
+    "lag_7": 0.0008,
+    "media_7": 0.0022,
+    "media_28": 0.0026,
+    "pronostico": 0.0042,
+    "venta_real": 0.001
+  },
+  "equidad": {
+    "pronostico": "media",
+    "quintiles": {
+      "Q1": {
+        "sucursales": 6,
+        "venta_semanal_media": 23.073611111111113,
+        "wape_semanal_pct": 21.53597888465741
+      },
+      "Q2": {
+        "sucursales": 6,
+        "venta_semanal_media": 37.94074074074074,
+        "wape_semanal_pct": 19.400581310344407
+      },
+      "Q3": {
+        "sucursales": 6,
+        "venta_semanal_media": 47.39259259259259,
+        "wape_semanal_pct": 18.860252665345165
+      },
+      "Q4": {
+        "sucursales": 6,
+        "venta_semanal_media": 54.99166666666667,
+        "wape_semanal_pct": 17.490095597402195
+      },
+      "Q5": {
+        "sucursales": 6,
+        "venta_semanal_media": 88.97592592592592,
+        "wape_semanal_pct": 19.060607547325812
+      }
+    },
+    "razon_peor_mejor": 1.231324252330339
+  },
+  "alertas": [],
+  "advertencias": [],
+  "estado": "ok",
+  "accion_recomendada": "ninguna"
+}

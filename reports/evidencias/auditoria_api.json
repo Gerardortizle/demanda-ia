@@ -1,0 +1,105 @@
+{
+    "eventos": [
+        {
+            "tipo": "auditoria_inferencia",
+            "id_peticion": "erp-noche-20261120-0001",
+            "fecha_utc": "2026-11-18T16:40:36.788+00:00",
+            "endpoint": "pronostico",
+            "modelo_version": "1.1.0",
+            "modelo_sha256": "7d57ee24511a",
+            "huella_entrada": "28026949ad0c0c53",
+            "entrada": {
+                "sucursal_id": "SUC-014",
+                "sku": "SKU-0013",
+                "fecha": "2026-11-20",
+                "precio": 160.0,
+                "en_promocion": false,
+                "lag_7": 7.0,
+                "media_7": 7.0,
+                "media_28": 7.0
+            },
+            "salida": {
+                "sucursal_id": "SUC-014",
+                "sku": "SKU-0013",
+                "fecha": "2026-11-20",
+                "pronostico_p50": 8.96,
+                "pronostico_p90": 16.35,
+                "pronostico_media": 10.76,
+                "unidades_sugeridas": 17,
+                "advertencias": [
+                    "Precio relativo 1.39 fuera del rango de entrenamiento [0.75, 1.05]; se acoto para el calculo."
+                ],
+                "modelo_version": "1.1.0"
+            },
+            "advertencias": [
+                "Precio relativo 1.39 fuera del rango de entrenamiento [0.75, 1.05]; se acoto para el calculo."
+            ]
+        },
+        {
+            "tipo": "auditoria_inferencia",
+            "id_peticion": "erp-noche-20261120-0002",
+            "fecha_utc": "2026-11-18T16:40:36.801+00:00",
+            "endpoint": "pronostico",
+            "modelo_version": "1.1.0",
+            "modelo_sha256": "7d57ee24511a",
+            "huella_entrada": "b8470057c40cfd2a",
+            "entrada": {
+                "sucursal_id": "SUC-020",
+                "sku": "SKU-0027",
+                "fecha": "2026-11-20",
+                "precio": null,
+                "en_promocion": false,
+                "lag_7": 0.0,
+                "media_7": 0.0,
+                "media_28": 0.0
+            },
+            "salida": {
+                "sucursal_id": "SUC-020",
+                "sku": "SKU-0027",
+                "fecha": "2026-11-20",
+                "pronostico_p50": 0.95,
+                "pronostico_p90": 2.23,
+                "pronostico_media": 0.98,
+                "unidades_sugeridas": 3,
+                "advertencias": [
+                    "Historial en ceros: posible SKU nuevo o quiebre de stock prolongado. Revisar manualmente."
+                ],
+                "modelo_version": "1.1.0"
+            },
+            "advertencias": [
+                "Historial en ceros: posible SKU nuevo o quiebre de stock prolongado. Revisar manualmente."
+            ]
+        },
+        {
+            "tipo": "auditoria_inferencia",
+            "id_peticion": "demo-fase3-001",
+            "fecha_utc": "2026-11-18T16:40:36.813+00:00",
+            "endpoint": "pronostico",
+            "modelo_version": "1.1.0",
+            "modelo_sha256": "7d57ee24511a",
+            "huella_entrada": "60d00f19991fc85d",
+            "entrada": {
+                "sucursal_id": "SUC-001",
+                "sku": "SKU-0005",
+                "fecha": "2026-12-15",
+                "precio": null,
+                "en_promocion": false,
+                "lag_7": 12.0,
+                "media_7": 11.0,
+                "media_28": 10.0
+            },
+            "salida": {
+                "sucursal_id": "SUC-001",
+                "sku": "SKU-0005",
+                "fecha": "2026-12-15",
+                "pronostico_p50": 12.51,
+                "pronostico_p90": 23.51,
+                "pronostico_media": 15.03,
+                "unidades_sugeridas": 24,
+                "advertencias": [],
+                "modelo_version": "1.1.0"
+            },
+            "advertencias": []
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # DEMANDA-IA · imagen multi-etapa
-#   docker build -t demanda-ia:1.0.0 .                 -> imagen de producción (etapa final)
+#   docker build -t demanda-ia:1.1.0 .                 -> imagen de producción (etapa final)
 #   docker build --target pruebas -t demanda-ia:test . -> corre la suite de pytest dentro del build
 
 # ---------- Etapa 1: dependencias de ejecución en un entorno virtual ----------
@@ -22,7 +22,7 @@ RUN pip install -r requirements-dev.txt
 COPY src/ src/
 COPY frontend/ frontend/
 COPY models/ models/
-COPY reports/metricas.json reports/metricas.json
+COPY config/ config/
 COPY tests/ tests/
 RUN PYTHONPATH=src python -m pytest -q
 
@@ -30,12 +30,12 @@ RUN PYTHONPATH=src python -m pytest -q
 FROM python:3.12-slim AS final
 LABEL org.opencontainers.image.title="DEMANDA-IA" \
       org.opencontainers.image.description="API y frontend de pronostico de demanda por SKU y sucursal" \
-      org.opencontainers.image.version="1.0.0"
+      org.opencontainers.image.version="1.1.0" \
+      org.opencontainers.image.source="https://github.com/gerardortizle/demanda-ia"
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
     PYTHONPATH=/app/src \
-    MODEL_PATH=/app/models/demanda_ia_v1.joblib \
     PORT=8000 \
     WEB_CONCURRENCY=1
 WORKDIR /app
@@ -44,6 +44,7 @@ COPY --from=dependencias /opt/venv /opt/venv
 COPY src/ src/
 COPY frontend/ frontend/
 COPY models/ models/
+COPY config/ config/
 USER appuser
 
 # Puerto de la API (las plataformas PaaS pueden inyectar otro valor en $PORT)

@@ -1,0 +1,113 @@
+[
+  {
+    "regla": "wape_semanal_max_pct",
+    "conjunto": "prueba_temporal",
+    "valor": 17.79,
+    "limite": 22.0,
+    "paso": true
+  },
+  {
+    "regla": "sesgo_semanal_abs_max_pct",
+    "conjunto": "prueba_temporal",
+    "valor": -2.859,
+    "limite": 15.0,
+    "paso": true
+  },
+  {
+    "regla": "mejora_min_vs_lag7_pct",
+    "conjunto": "prueba_temporal",
+    "valor": 36.456,
+    "limite": 10.0,
+    "paso": true
+  },
+  {
+    "regla": "cobertura_p90_rango_pct",
+    "conjunto": "prueba_temporal",
+    "valor": 88.79,
+    "limite": [
+      85.0,
+      93.0
+    ],
+    "paso": true
+  },
+  {
+    "regla": "fill_rate_min_pct",
+    "conjunto": "prueba_temporal",
+    "valor": 97.784,
+    "limite": 96.0,
+    "paso": true
+  },
+  {
+    "regla": "fill_rate_esenciales_min_pct",
+    "conjunto": "prueba_temporal",
+    "valor": 97.967,
+    "limite": 97.0,
+    "paso": true
+  },
+  {
+    "regla": "razon_equidad_max",
+    "conjunto": "prueba_temporal",
+    "valor": 1.223,
+    "limite": 1.25,
+    "paso": true
+  },
+  {
+    "regla": "wape_semanal_max_pct",
+    "conjunto": "sucursales_no_vistas",
+    "valor": 19.298,
+    "limite": 22.0,
+    "paso": true
+  },
+  {
+    "regla": "sesgo_semanal_abs_max_pct",
+    "conjunto": "sucursales_no_vistas",
+    "valor": -7.767,
+    "limite": 15.0,
+    "paso": true
+  },
+  {
+    "regla": "mejora_min_vs_lag7_pct",
+    "conjunto": "sucursales_no_vistas",
+    "valor": 28.149,
+    "limite": 10.0,
+    "paso": true
+  },
+  {
+    "regla": "cobertura_p90_rango_pct",
+    "conjunto": "sucursales_no_vistas",
+    "valor": 88.388,
+    "limite": [
+      85.0,
+      93.0
+    ],
+    "paso": true
+  },
+  {
+    "regla": "fill_rate_min_pct",
+    "conjunto": "sucursales_no_vistas",
+    "valor": 96.833,
+    "limite": 96.0,
+    "paso": true
+  },
+  {
+    "regla": "fill_rate_esenciales_min_pct",
+    "conjunto": "sucursales_no_vistas",
+    "valor": 97.169,
+    "limite": 97.0,
+    "paso": true
+  },
+  {
+    "regla": "razon_equidad_max",
+    "conjunto": "sucursales_no_vistas",
+    "valor": 1.238,
+    "limite": 1.25,
+    "paso": true
+  },
+  {
+    "regla": "diferencia_holdout_max_pts",
+    "conjunto": "ambos",
+    "valor": 1.508,
+    "limite": 3.0,
+    "paso": true
+  }
+]

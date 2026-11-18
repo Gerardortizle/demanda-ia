@@ -1,0 +1,54 @@
+{
+  "criterio": "menor WAPE semanal en validacion interna (jul-sep 2025)",
+  "mejor_config": 3,
+  "resultados": [
+    {
+      "config": 1,
+      "learning_rate": 0.08,
+      "max_iter": 300,
+      "max_leaf_nodes": 63,
+      "min_samples_leaf": 40,
+      "iteraciones": 300,
+      "segundos": 13.8,
+      "wape_diario_pct": 47.84457576147254,
+      "wape_semanal_pct": 18.351919313877698,
+      "sesgo_semanal_pct": -1.9640542235544367
+    },
+    {
+      "config": 2,
+      "learning_rate": 0.1,
+      "max_iter": 600,
+      "max_leaf_nodes": 63,
+      "min_samples_leaf": 40,
+      "iteraciones": 308,
+      "segundos": 13.5,
+      "wape_diario_pct": 47.81931614948585,
+      "wape_semanal_pct": 18.386288713961353,
+      "sesgo_semanal_pct": -2.172007710177841
+    },
+    {
+      "config": 3,
+      "learning_rate": 0.1,
+      "max_iter": 600,
+      "max_leaf_nodes": 31,
+      "min_samples_leaf": 80,
+      "iteraciones": 526,
+      "segundos": 18.0,
+      "wape_diario_pct": 47.71129406505758,
+      "wape_semanal_pct": 18.35016240925709,
+      "sesgo_semanal_pct": -2.506476652586274
+    },
+    {
+      "config": 4,
+      "learning_rate": 0.05,
+      "max_iter": 1000,
+      "max_leaf_nodes": 127,
+      "min_samples_leaf": 40,
+      "iteraciones": 362,
+      "segundos": 19.8,
+      "wape_diario_pct": 47.87139911057092,
+      "wape_semanal_pct": 18.428092357776276,
+      "sesgo_semanal_pct": -1.9093898585346214
+    }
+  ]
+}

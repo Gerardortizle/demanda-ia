@@ -1,0 +1,34 @@
+digraph G {
+  rankdir=TB; newrank=true; fontname="Helvetica"; nodesep=0.3; ranksep=0.6; compound=true;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, color="#0f6e5c", fillcolor="#eef6f3", penwidth=1.3];
+  edge [fontname="Helvetica", fontsize=8.5, color="#1e2a2f"];
+  subgraph cluster_cli { label="Clientes"; color="#9aa8a4"; style="dashed,rounded"; fontsize=11;
+    erp [label="ERP\ncorrida nocturna\n/pronostico/lote", fillcolor="#ffffff"];
+    web [label="Compradores y\ngerentes\ninterfaz web", fillcolor="#ffffff"];
+  }
+  subgraph cluster_run { label="Google Cloud Run · revisión con imagen demanda-ia:1.1.0 (1 vCPU, 1 GiB, 0-3 instancias)"; color="#0f6e5c"; style="rounded"; fontsize=11;
+    mw [label="Middleware\nX-Request-ID · latencia\nCORS · errores 500"];
+    api [label="FastAPI\n10 endpoints\nvalidación Pydantic"];
+    srv [label="Servicio de modelo\nP50 · P90 · media\nadvertencias de entrada"];
+    regi [label="models/registro.json\n→ campeón 1.1.0\nSHA-256 verificado", fillcolor="#fff5e6", color="#c98a1a"];
+    aud [label="Auditoría y métricas\nevento por inferencia\n/monitoreo · /metrics", fillcolor="#fdeeee", color="#c62828"];
+    umb [label="config/umbrales.toml", fillcolor="#ffffff"];
+  }
+  subgraph cluster_obs { label="Observabilidad"; color="#c62828"; style="rounded"; fontsize=11;
+    logs [label="Cloud Logging\nlogs JSON de auditoría", fillcolor="#fdeeee", color="#c62828"];
+    mon [label="Cloud Monitoring /\nPrometheus\nuptime /salud · alertas", fillcolor="#fdeeee", color="#c62828"];
+  }
+  subgraph cluster_gh { label="GitHub"; color="#1f5f8b"; style="rounded"; fontsize=11;
+    ci [label="ci.yml → GHCR", color="#1f5f8b", fillcolor="#eef3f8"];
+    cd [label="cd.yml → Artifact Registry\n→ gcloud run services replace", color="#1f5f8b", fillcolor="#eef3f8"];
+    ct [label="entrenamiento.yml\nMLflow · PR del modelo", color="#1f5f8b", fillcolor="#eef3f8"];
+    mo [label="monitoreo.yml\nsemanal · issues", color="#1f5f8b", fillcolor="#eef3f8"];
+  }
+  {rank=same; erp; web; ci; ct; mo; cd;}
+  {rank=same; logs; mon;}
+  erp -> mw [label="HTTPS"]; web -> mw;
+  mw -> api -> srv; regi -> srv [label="al arrancar"]; umb -> srv [style=dashed]; umb -> aud [style=dashed];
+  api -> aud; aud -> logs [label="stdout"]; aud -> mon [label="/metrics"];
+  ci -> cd [label="imagen"]; cd -> mw [lhead=cluster_run, label="revisión nueva\n+ humo + rollback"];
+  ct -> ci [label="merge"]; mo -> ct [label="alerta de\ndegradación", color="#c62828", fontcolor="#c62828"];
+}

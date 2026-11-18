@@ -1,0 +1,5 @@
+# Benchmark v1.1 ANTES de optimizar /reabasto (3 predicciones por día del horizonte)
+POST /pronostico (1 registro)      n=100  p50=   11.7 ms  p95=   12.8 ms  max=   15.2 ms
+POST /pronostico/lote (1000)       n=20   p50=   52.2 ms  p95=   61.6 ms  max=  104.0 ms
+POST /reabasto (14 dias)           n=50   p50=  144.6 ms  p95=  175.0 ms  max=  191.8 ms
+Corrida nocturna completa (4 200 pronosticos en lotes de 1000): 0.26 s

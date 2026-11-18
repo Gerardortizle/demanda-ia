@@ -1,7 +1,13 @@
-# Integración continua de DEMANDA-IA
-# 1) pruebas unitarias/funcionales con pytest
-# 2) construcción de la imagen, arranque del contenedor y prueba de humo
-# 3) en la rama main, publicación de la imagen en GitHub Container Registry (GHCR)
+# Integración y entrega continua de DEMANDA-IA (Fase III)
+#
+#   calidad ──► pruebas ──► modelo ──► contenedor ──► publicar (solo main)
+#
+# 1) calidad:    lint con ruff
+# 2) pruebas:    pytest (código, API, contrato de datos, registro y monitoreo) + reporte JUnit
+# 3) modelo:     compuerta del modelo campeón: integridad SHA-256, umbrales de config/umbrales.toml
+# 4) contenedor: build multi-etapa, healthcheck, prueba de humo, escaneo de vulnerabilidades
+# 5) publicar:   imagen en GHCR con etiquetas <version>, sha-<commit> y latest
+# El despliegue a Cloud Run lo hace cd.yml a partir de los manifiestos de deploy/ (GitOps).
 name: ci
 
 on:
@@ -14,8 +20,27 @@ permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONPATH: src
+
 jobs:
+  calidad:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff==0.17.5
+      - name: Lint (ruff)
+        run: ruff check . --output-format=github
+
   pruebas:
+    needs: calidad
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,18 +49,47 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements-dev.txt
-      - run: PYTHONPATH=src python -m pytest -v --junitxml=reports/junit.xml
+      - name: Pruebas automatizadas (código, API y datos)
+        run: python -m pytest -v --junitxml=reports/junit.xml
+      - name: Resumen
+        if: always()
+        run: |
+          python - <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          import xml.etree.ElementTree as ET
+          s = ET.parse("reports/junit.xml").getroot().find("testsuite")
+          print(f"### Pruebas: {s.get('tests')} ejecutadas, {s.get('failures')} fallas, {s.get('errors')} errores, {float(s.get('time')):.1f} s")
+          EOF
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: resultados-pytest
           path: reports/junit.xml
 
-  contenedor:
+  modelo:
     needs: pruebas
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - name: Compuerta del modelo campeón
+        run: python scripts/verificar_modelo.py
+      - name: Registro de modelos
+        run: python -m demanda_ia.registro listar
+
+  contenedor:
+    needs: modelo
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Versión de la aplicación
+        id: version
+        run: echo "version=$(grep -oP '^version = "\K[^"]+' pyproject.toml)" >> "$GITHUB_OUTPUT"
       - name: Construir imagen
         run: docker build -t demanda-ia:${{ github.sha }} .
       - name: Ejecutar contenedor
@@ -54,12 +108,43 @@ jobs:
       - name: Logs del contenedor
         if: always()
         run: docker logs demanda
-      - name: Publicar en GHCR
+      - name: Escaneo de vulnerabilidades (Trivy, informativo)
+        # Fijado por SHA (v0.36.0): las etiquetas de esta acción cambiaron y una etiqueta puede moverse.
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          image-ref: demanda-ia:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "0"
+          format: table
+      - name: Guardar imagen para el job de publicación
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: docker save demanda-ia:${{ github.sha }} | gzip > imagen.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        with:
+          name: imagen
+          path: imagen.tar.gz
+          retention-days: 1
+
+  publicar:
+    needs: contenedor
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: imagen
+      - name: Publicar en GHCR
         run: |
+          docker load < imagen.tar.gz
           IMG=ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          V=${{ needs.contenedor.outputs.version }}
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker tag demanda-ia:${{ github.sha }} $IMG:1.0.0
-          docker tag demanda-ia:${{ github.sha }} $IMG:latest
-          docker push $IMG:1.0.0
-          docker push $IMG:latest
+          for tag in "$V" "sha-${GITHUB_SHA::7}" latest; do
+            docker tag demanda-ia:${{ github.sha }} $IMG:$tag
+            docker push $IMG:$tag
+          done
+          echo "### Imagen publicada: \`$IMG:$V\` (también \`sha-${GITHUB_SHA::7}\` y \`latest\`)" >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,50 @@
+# Estado deseado del servicio en Cloud Run, ambiente: staging.
+# GitOps: este archivo es la fuente de verdad. Para desplegar otra versión se cambia la
+# etiqueta de la imagen en un pull request; al fusionarlo, .github/workflows/cd.yml lo aplica
+# con "gcloud run services replace". ${GCP_PROJECT_ID} lo sustituye el workflow.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: demanda-ia-staging
+  labels:
+    app: demanda-ia
+    ambiente: staging
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "2"
+        run.googleapis.com/startup-cpu-boost: "true"
+      labels:
+        version-modelo: "1-1-0"
+    spec:
+      containerConcurrency: 40
+      timeoutSeconds: 120
+      containers:
+        - image: us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/demanda-ia/api:1.1.0
+          ports:
+            - containerPort: 8000
+          env:
+            - name: LOG_LEVEL
+              value: INFO
+            - name: MAX_LOTE
+              value: "1000"
+            - name: AMBIENTE
+              value: staging
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          startupProbe:
+            httpGet:
+              path: /api/v1/salud
+            periodSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /api/v1/salud
+            periodSeconds: 30
+  traffic:
+    - latestRevision: true
+      percent: 100

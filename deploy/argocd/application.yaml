@@ -1,0 +1,22 @@
+# Argo CD observa deploy/k8s en la rama main y sincroniza el clúster (GitOps tipo pull).
+# selfHeal revierte cambios manuales en el clúster; prune elimina lo que ya no está en Git.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demanda-ia
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/gerardortizle/demanda-ia.git
+    targetRevision: main
+    path: deploy/k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: demanda-ia
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

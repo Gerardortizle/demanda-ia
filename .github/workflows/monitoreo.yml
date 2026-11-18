@@ -1,0 +1,67 @@
+# Monitoreo semanal del modelo en operación (desempeño, deriva, calibración y equidad)
+#
+# Si encuentra una alerta: abre (o actualiza) un issue con la etiqueta "monitoreo" y, si la
+# alerta es de desempeño, dispara entrenamiento.yml. El escenario permite demostrar que las
+# alertas funcionan inyectando cambios controlados (brote, competidor, alza de precios).
+name: monitoreo
+
+on:
+  schedule:
+    - cron: "0 13 * * 1"          # lunes 07:00 hora del centro de México
+  workflow_dispatch:
+    inputs:
+      escenario:
+        description: "Escenario de operación"
+        type: choice
+        options: [base, brote_respiratorio, competidor_jalisco, alza_precios]
+        default: base
+      desde:
+        description: "Lunes de inicio de la ventana (AAAA-MM-DD)"
+        default: "2026-08-03"
+      reentrenar:
+        description: "Disparar el reentrenamiento si hay degradación"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+env:
+  PYTHONPATH: src
+
+jobs:
+  monitorear:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - name: Reporte de monitoreo
+        id: mon
+        run: |
+          python -m demanda_ia.monitoreo \
+            --escenario "${{ github.event.inputs.escenario || 'base' }}" \
+            --desde "${{ github.event.inputs.desde || '2026-08-03' }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: monitoreo-${{ github.event.inputs.escenario || 'base' }}-${{ github.run_number }}
+          path: reports/monitoreo/
+      - name: Abrir issue de alerta
+        if: steps.mon.outputs.estado == 'alerta'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ESC="${{ github.event.inputs.escenario || 'base' }}"
+          gh label create monitoreo --color B60205 --description "Alertas del monitoreo del modelo" 2>/dev/null || true
+          gh issue create --title "Alerta de monitoreo DEMANDA-IA ($ESC, corrida ${{ github.run_number }})" \
+            --label monitoreo --body-file "reports/monitoreo/$ESC/resumen.md"
+      - name: Disparar reentrenamiento
+        if: steps.mon.outputs.reentrenar == 'true' && (github.event_name == 'schedule' || github.event.inputs.reentrenar == 'true')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run entrenamiento.yml -f motivo="alerta de monitoreo, corrida ${{ github.run_number }}"

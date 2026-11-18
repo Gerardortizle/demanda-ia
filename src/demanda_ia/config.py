@@ -5,18 +5,44 @@ El catálogo es sintético pero estable (semilla fija) y representa la red de
 """
 from __future__ import annotations
 
+import json
 import os
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 
-MODEL_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"      # versión del servicio (API); la del modelo viaja en el artefacto
+MODEL_VERSION = APP_VERSION  # versión que recibe un modelo nuevo si no se indica otra
 SEMILLA = 2026
 
 RAIZ = Path(__file__).resolve().parents[2]
-MODEL_PATH = Path(os.getenv("MODEL_PATH", RAIZ / "models" / "demanda_ia_v1.joblib"))
+MODELS_DIR = RAIZ / "models"
+REGISTRO_PATH = Path(os.getenv("REGISTRO_PATH", MODELS_DIR / "registro.json"))
+UMBRALES_PATH = Path(os.getenv("UMBRALES_PATH", RAIZ / "config" / "umbrales.toml"))
+REPORTS_DIR = RAIZ / "reports"
+
+
+def _ruta_campeon() -> Path:
+    """Artefacto que sirve la API: MODEL_PATH si se define; si no, el campeón del registro.
+    El registro (models/registro.json) vive en Git, así que cambiar de modelo es un commit (GitOps)."""
+    if os.getenv("MODEL_PATH"):
+        return Path(os.environ["MODEL_PATH"])
+    try:
+        reg = json.loads(REGISTRO_PATH.read_text(encoding="utf-8"))
+        return MODELS_DIR / reg["modelos"][reg["campeon"]]["artefacto"]
+    except (OSError, KeyError, ValueError):
+        return MODELS_DIR / "demanda_ia_v1.joblib"
+
+
+MODEL_PATH = _ruta_campeon()
 METADATA_PATH = MODEL_PATH.with_suffix(".json")
+
+
+def cargar_umbrales() -> dict:
+    with open(UMBRALES_PATH, "rb") as f:
+        return tomllib.load(f)
 
 # Límites operativos de la API
 MAX_LOTE = int(os.getenv("MAX_LOTE", "1000"))

@@ -1,0 +1,79 @@
+# Despliegue continuo GitOps a Google Cloud Run
+#
+# Fuente de verdad: deploy/cloudrun/staging.yaml y deploy/cloudrun/produccion.yaml.
+# Cuando un pull request que cambia esos manifiestos se fusiona en main:
+#   staging    -> se aplica solo, prueba de humo y regreso automático si falla
+#   produccion -> espera aprobación manual (environment "produccion") y repite el proceso
+# La imagen sale de GHCR (publicada por ci.yml) y se copia a Artifact Registry.
+#
+# Configuración única en GitHub (Settings):
+#   Secrets  -> GCP_CREDENTIALS: JSON de una cuenta de servicio con roles run.admin,
+#               artifactregistry.writer e iam.serviceAccountUser
+#   Variables-> GCP_PROJECT_ID: id del proyecto de Google Cloud
+#   Environments -> "produccion" con revisores requeridos
+# Sin esas credenciales los jobs de despliegue se omiten y el workflow queda en verde.
+name: cd
+
+on:
+  push:
+    branches: [main]
+    paths: ["deploy/cloudrun/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: cd-cloudrun
+  cancel-in-progress: false
+
+env:
+  REGION: us-central1
+
+jobs:
+  preparar:
+    runs-on: ubuntu-latest
+    outputs:
+      gcp: ${{ steps.c.outputs.gcp }}
+    steps:
+      - id: c
+        env:
+          CRED: ${{ secrets.GCP_CREDENTIALS }}
+        run: |
+          if [ -n "$CRED" ] && [ -n "${{ vars.GCP_PROJECT_ID }}" ]; then echo "gcp=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "gcp=false" >> "$GITHUB_OUTPUT"
+            echo "### Despliegue omitido: faltan GCP_CREDENTIALS o GCP_PROJECT_ID" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  staging:
+    needs: preparar
+    if: needs.preparar.outputs.gcp == 'true'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/desplegar-cloudrun
+        with:
+          manifiesto: deploy/cloudrun/staging.yaml
+          servicio: demanda-ia-staging
+          credenciales: ${{ secrets.GCP_CREDENTIALS }}
+          proyecto: ${{ vars.GCP_PROJECT_ID }}
+          region: ${{ env.REGION }}
+          token-ghcr: ${{ secrets.GITHUB_TOKEN }}
+
+  produccion:
+    needs: staging
+    runs-on: ubuntu-latest
+    environment: produccion   # aprobación manual configurada en el repositorio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/desplegar-cloudrun
+        with:
+          manifiesto: deploy/cloudrun/produccion.yaml
+          servicio: demanda-ia
+          credenciales: ${{ secrets.GCP_CREDENTIALS }}
+          proyecto: ${{ vars.GCP_PROJECT_ID }}
+          region: ${{ env.REGION }}
+          token-ghcr: ${{ secrets.GITHUB_TOKEN }}

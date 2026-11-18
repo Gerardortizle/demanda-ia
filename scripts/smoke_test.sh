@@ -33,5 +33,10 @@ cat /tmp/smoke_cuerpo.json; echo
 revisar "POST pronostico SKU invalido"    422 -X POST -H "$J" "$URL/api/v1/pronostico" \
   -d '{"sucursal_id":"SUC-001","sku":"SKU-9999","fecha":"2026-12-15","lag_7":1,"media_7":1,"media_28":1}'
 
+# Fase III: monitoreo, auditoría y métricas Prometheus
+revisar "GET  /api/v1/monitoreo"          200 "$URL/api/v1/monitoreo"
+revisar "GET  /api/v1/auditoria"          200 "$URL/api/v1/auditoria?n=5"
+revisar "GET  /metrics (Prometheus)"      200 "$URL/metrics"
+
 echo "-----"
 [ "$FALLAS" -eq 0 ] && echo "Prueba de humo superada" || { echo "$FALLAS prueba(s) fallaron"; exit 1; }

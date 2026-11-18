@@ -1,0 +1,38 @@
+
+digraph G {
+  rankdir=TB; bgcolor="white"; fontname="Helvetica"; nodesep=0.3; ranksep=0.55; newrank=true;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, color="#0f6e5c", fillcolor="#eef6f3", penwidth=1.4];
+  edge [color="#1e2a2f", fontname="Helvetica", fontsize=8.5];
+  subgraph cluster_git { label="GitHub (fuente de verdad)"; fontsize=11; color="#9aa8a4"; style="dashed,rounded";
+    dev [label="Desarrollador\npush / pull request", fillcolor="#ffffff"];
+    repo [label="Repositorio\ncódigo · umbrales.toml\nregistro.json · deploy/*.yaml"];
+  }
+  subgraph cluster_ci { label="ci.yml (cada push y PR)"; fontsize=11; color="#0f6e5c"; style="rounded";
+    lint [label="Lint\nruff"]; tests [label="Pruebas\n69 pytest\ncódigo · API · datos"]; gate [label="Compuerta\nmodelo\nSHA-256 + 15 reglas"];
+    img [label="Contenedor\nbuild · healthcheck\nhumo · Trivy"]; ghcr [label="GHCR\n1.1.0 · sha · latest", fillcolor="#fff5e6", color="#c98a1a"];
+  }
+  subgraph cluster_ct { label="entrenamiento.yml (mensual o por alerta)"; fontsize=11; color="#1f5f8b"; style="rounded";
+    datos [label="Contrato\nde datos\n14 reglas", color="#1f5f8b", fillcolor="#eef3f8"];
+    train [label="Entrenar retador\nP50 · P90 · media", color="#1f5f8b", fillcolor="#eef3f8"];
+    evalu [label="Evaluar\ntécnica · negocio\nequidad", color="#1f5f8b", fillcolor="#eef3f8"];
+    champ [label="Campeón vs\nretador", color="#1f5f8b", fillcolor="#eef3f8"];
+    mlf [label="MLflow\nparámetros · métricas\nartefactos", color="#1f5f8b", fillcolor="#ffffff"];
+    pr [label="Pull request\ncon el modelo", color="#1f5f8b", fillcolor="#ffffff"];
+  }
+  subgraph cluster_cd { label="cd.yml (GitOps)"; fontsize=11; color="#c98a1a"; style="rounded";
+    stg [label="Cloud Run\nstaging\nhumo + rollback", color="#c98a1a", fillcolor="#fff5e6"];
+    prod [label="Cloud Run\nproducción\naprobación manual", color="#c98a1a", fillcolor="#fff5e6"];
+  }
+  subgraph cluster_ops { label="Operación"; fontsize=11; color="#c62828"; style="rounded";
+    api [label="API v1.1\nauditoría · /monitoreo\n/metrics", color="#c62828", fillcolor="#fdeeee"];
+    mon [label="monitoreo.yml\nsemanal: WAPE · sesgo\nPSI · equidad", color="#c62828", fillcolor="#fdeeee"];
+    issue [label="Issue de alerta", color="#c62828", fillcolor="#ffffff"];
+  }
+  {rank=same; dev; repo;} {rank=same; lint; tests; gate; img; ghcr;} {rank=same; datos; train; evalu; champ; pr;}
+  {rank=same; stg; prod; api; mon; issue;} mlf;
+  dev -> repo; repo -> lint -> tests -> gate -> img -> ghcr;
+  datos -> train -> evalu -> champ -> pr; evalu -> mlf [style=dashed];
+  pr -> repo [label="revisión\ny merge"];
+  ghcr -> stg [label="manifiesto\ncambia"]; stg -> prod; prod -> api; api -> mon [style=dashed, label="ventas reales"];
+  mon -> issue; mon -> datos [label="degradación:\nreentrenar", color="#c62828", fontcolor="#c62828"];
+}
