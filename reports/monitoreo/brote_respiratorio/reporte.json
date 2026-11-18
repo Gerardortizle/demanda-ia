@@ -1,0 +1,234 @@
+{
+  "modelo_version": "1.1.0",
+  "escenario": "brote_respiratorio",
+  "descripcion_escenario": "Brote respiratorio: antigripales y analgésicos +80 % desde la semana 5",
+  "ventana": [
+    "2026-08-03",
+    "2026-10-25"
+  ],
+  "sucursales": 30,
+  "filas": 75600,
+  "resumen": {
+    "wape_semanal_pct": 27.73,
+    "sesgo_semanal_pct": -19.85,
+    "cobertura_p90_ultimas4_pct": 82.65
+  },
+  "por_semana": [
+    {
+      "semana": "2026-08-03",
+      "wape_semanal_pct": 19.23,
+      "sesgo_semanal_pct": -4.5,
+      "cobertura_p90_pct": 89.03,
+      "fill_rate_pct": 97.85
+    },
+    {
+      "semana": "2026-08-10",
+      "wape_semanal_pct": 19.36,
+      "sesgo_semanal_pct": -3.96,
+      "cobertura_p90_pct": 88.63,
+      "fill_rate_pct": 97.43
+    },
+    {
+      "semana": "2026-08-17",
+      "wape_semanal_pct": 19.03,
+      "sesgo_semanal_pct": -6.35,
+      "cobertura_p90_pct": 88.49,
+      "fill_rate_pct": 97.03
+    },
+    {
+      "semana": "2026-08-24",
+      "wape_semanal_pct": 19.26,
+      "sesgo_semanal_pct": -6.2,
+      "cobertura_p90_pct": 88.56,
+      "fill_rate_pct": 96.95
+    },
+    {
+      "semana": "2026-08-31",
+      "wape_semanal_pct": 35.14,
+      "sesgo_semanal_pct": -29.08,
+      "cobertura_p90_pct": 77.54,
+      "fill_rate_pct": 80.11
+    },
+    {
+      "semana": "2026-09-07",
+      "wape_semanal_pct": 32.35,
+      "sesgo_semanal_pct": -26.5,
+      "cobertura_p90_pct": 79.19,
+      "fill_rate_pct": 84.92
+    },
+    {
+      "semana": "2026-09-14",
+      "wape_semanal_pct": 31.02,
+      "sesgo_semanal_pct": -24.18,
+      "cobertura_p90_pct": 82.4,
+      "fill_rate_pct": 87.55
+    },
+    {
+      "semana": "2026-09-21",
+      "wape_semanal_pct": 29.13,
+      "sesgo_semanal_pct": -23.97,
+      "cobertura_p90_pct": 83.43,
+      "fill_rate_pct": 90.7
+    },
+    {
+      "semana": "2026-09-28",
+      "wape_semanal_pct": 29.69,
+      "sesgo_semanal_pct": -24.01,
+      "cobertura_p90_pct": 82.65,
+      "fill_rate_pct": 89.46
+    },
+    {
+      "semana": "2026-10-05",
+      "wape_semanal_pct": 29.08,
+      "sesgo_semanal_pct": -22.89,
+      "cobertura_p90_pct": 83.32,
+      "fill_rate_pct": 89.78
+    },
+    {
+      "semana": "2026-10-12",
+      "wape_semanal_pct": 29.29,
+      "sesgo_semanal_pct": -23.98,
+      "cobertura_p90_pct": 82.32,
+      "fill_rate_pct": 90.23
+    },
+    {
+      "semana": "2026-10-19",
+      "wape_semanal_pct": 30.49,
+      "sesgo_semanal_pct": -25.56,
+      "cobertura_p90_pct": 82.32,
+      "fill_rate_pct": 89.64
+    }
+  ],
+  "psi": {
+    "precio_relativo": 0.0,
+    "en_promocion": 0.0001,
+    "dia_semana": 0.0,
+    "es_quincena": 0.0031,
+    "lag_7": 0.0273,
+    "media_7": 0.0474,
+    "media_28": 0.032,
+    "pronostico": 0.0049,
+    "venta_real": 0.0357
+  },
+  "equidad": {
+    "pronostico": "media",
+    "quintiles": {
+      "Q1": {
+        "sucursales": 6,
+        "venta_semanal_media": 28.5875,
+        "wape_semanal_pct": 28.32659695596181
+      },
+      "Q2": {
+        "sucursales": 6,
+        "venta_semanal_media": 46.94861111111111,
+        "wape_semanal_pct": 27.61387921512911
+      },
+      "Q3": {
+        "sucursales": 6,
+        "venta_semanal_media": 58.4587962962963,
+        "wape_semanal_pct": 27.290669326457504
+      },
+      "Q4": {
+        "sucursales": 6,
+        "venta_semanal_media": 67.98564814814814,
+        "wape_semanal_pct": 26.185541130428607
+      },
+      "Q5": {
+        "sucursales": 6,
+        "venta_semanal_media": 109.7199074074074,
+        "wape_semanal_pct": 28.8203505429512
+      }
+    },
+    "razon_peor_mejor": 1.1006207738613751
+  },
+  "alertas": [
+    {
+      "tipo": "desempeno",
+      "semana": "2026-08-31",
+      "detalle": "WAPE semanal 35.14 % > 26.0 %"
+    },
+    {
+      "tipo": "sesgo",
+      "semana": "2026-08-31",
+      "detalle": "Sesgo semanal -29.08 % (limite +/-15.0 %)"
+    },
+    {
+      "tipo": "desempeno",
+      "semana": "2026-09-07",
+      "detalle": "WAPE semanal 32.35 % > 26.0 %"
+    },
+    {
+      "tipo": "sesgo",
+      "semana": "2026-09-07",
+      "detalle": "Sesgo semanal -26.5 % (limite +/-15.0 %)"
+    },
+    {
+      "tipo": "desempeno",
+      "semana": "2026-09-14",
+      "detalle": "WAPE semanal 31.02 % > 26.0 %"
+    },
+    {
+      "tipo": "sesgo",
+      "semana": "2026-09-14",
+      "detalle": "Sesgo semanal -24.18 % (limite +/-15.0 %)"
+    },
+    {
+      "tipo": "desempeno",
+      "semana": "2026-09-21",
+      "detalle": "WAPE semanal 29.13 % > 26.0 %"
+    },
+    {
+      "tipo": "sesgo",
+      "semana": "2026-09-21",
+      "detalle": "Sesgo semanal -23.97 % (limite +/-15.0 %)"
+    },
+    {
+      "tipo": "desempeno",
+      "semana": "2026-09-28",
+      "detalle": "WAPE semanal 29.69 % > 26.0 %"
+    },
+    {
+      "tipo": "sesgo",
+      "semana": "2026-09-28",
+      "detalle": "Sesgo semanal -24.01 % (limite +/-15.0 %)"
+    },
+    {
+      "tipo": "desempeno",
+      "semana": "2026-10-05",
+      "detalle": "WAPE semanal 29.08 % > 26.0 %"
+    },
+    {
+      "tipo": "sesgo",
+      "semana": "2026-10-05",
+      "detalle": "Sesgo semanal -22.89 % (limite +/-15.0 %)"
+    },
+    {
+      "tipo": "desempeno",
+      "semana": "2026-10-12",
+      "detalle": "WAPE semanal 29.29 % > 26.0 %"
+    },
+    {
+      "tipo": "sesgo",
+      "semana": "2026-10-12",
+      "detalle": "Sesgo semanal -23.98 % (limite +/-15.0 %)"
+    },
+    {
+      "tipo": "desempeno",
+      "semana": "2026-10-19",
+      "detalle": "WAPE semanal 30.49 % > 26.0 %"
+    },
+    {
+      "tipo": "sesgo",
+      "semana": "2026-10-19",
+      "detalle": "Sesgo semanal -25.56 % (limite +/-15.0 %)"
+    },
+    {
+      "tipo": "calibracion",
+      "semana": "ultimas 4",
+      "detalle": "Cobertura P90 promedio 82.7 % < 85.0 %"
+    }
+  ],
+  "advertencias": [],
+  "estado": "alerta",
+  "accion_recomendada": "reentrenar: lanzar el workflow 'entrenamiento' y evaluar al retador contra el campeon"
+}

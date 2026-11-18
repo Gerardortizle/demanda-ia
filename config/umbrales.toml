@@ -1,0 +1,35 @@
+# Umbrales de DEMANDA-IA (fuente única para CI, pipeline de entrenamiento y monitoreo).
+# Se versionan en Git: cambiar un umbral requiere un pull request revisado (GitOps).
+# Origen de cada valor: Fase I (Business Case, Tabla 6 y matriz de riesgos) y Fase II (validación).
+
+[compuertas_entrenamiento]
+# Un modelo retador solo se registra si cumple TODAS estas condiciones en la prueba temporal
+# y en las sucursales no vistas.
+wape_semanal_max_pct = 22.0          # Meta Fase I: WMAPE <= 22 %
+cobertura_p90_min_pct = 85.0         # Fase II: recalibrar si baja de 85 %
+cobertura_p90_max_pct = 93.0         # Más arriba el stock de seguridad sobra
+sesgo_semanal_abs_max_pct = 15.0     # Sesgo del pronóstico usado para planear compras
+mejora_min_vs_lag7_pct = 10.0        # Debe mejorar al menos 10 % el WAPE semanal de la regla ingenua
+fill_rate_min_pct = 96.0             # Meta Fase I: nivel de servicio >= 96 %
+fill_rate_esenciales_min_pct = 97.0  # Meta Fase I: medicamentos esenciales >= 97 %
+razon_equidad_max = 1.25             # R02: peor quintil de sucursales / mejor quintil (WAPE semanal)
+diferencia_holdout_max_pts = 3.0     # Generalización a sucursales no vistas
+
+[promocion]
+# El retador reemplaza al campeón solo si no empeora el WAPE semanal más de esta tolerancia
+tolerancia_wape_semanal_pts = 0.5
+
+[monitoreo]
+wape_semanal_alerta_pct = 26.0       # Fase I: alerta si WMAPE > 26 %
+wape_semanal_meta_pct = 22.0
+cobertura_p90_alerta_pct = 85.0
+sesgo_semanal_alerta_pct = 15.0
+psi_advertencia = 0.10               # Population Stability Index
+psi_alerta = 0.25
+tasa_advertencias_api_alerta_pct = 5.0
+latencia_p95_alerta_ms = 500.0
+
+[politica_reabasto]
+# Stock de seguridad = factor * raiz(suma (P90 - P50)^2). Ver ADR-004.
+factor_seguridad = 1.0
+categorias_esenciales = ["cronicos", "sueros_antidiarreicos", "infantil"]

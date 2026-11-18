@@ -68,3 +68,37 @@ def test_openapi_documenta_endpoints(cliente):
     rutas = cliente.get("/openapi.json").json()["paths"]
     for ruta in ["/api/v1/pronostico", "/api/v1/pronostico/lote", "/api/v1/reabasto", "/api/v1/salud"]:
         assert ruta in rutas
+
+
+def test_request_id_y_auditoria(cliente, base):
+    r = cliente.post("/api/v1/pronostico", json=base, headers={"X-Request-ID": "prueba-auditoria-001"})
+    assert r.headers["X-Request-ID"] == "prueba-auditoria-001"
+    eventos = cliente.get("/api/v1/auditoria", params={"n": 50}).json()["eventos"]
+    ev = next(e for e in eventos if e["id_peticion"] == "prueba-auditoria-001")
+    assert ev["modelo_version"] == r.json()["modelo_version"] and len(ev["modelo_sha256"]) == 12
+    assert ev["entrada"]["sku"] == base["sku"] and ev["salida"]["pronostico_p50"] == r.json()["pronostico_p50"]
+
+
+def test_pronostico_incluye_media(cliente, base):
+    d = cliente.post("/api/v1/pronostico", json=base).json()
+    assert d["pronostico_media"] is not None and d["pronostico_media"] >= 0
+
+
+def test_monitoreo_operativo(cliente, base):
+    for _ in range(3):
+        cliente.post("/api/v1/pronostico", json=base)
+    m = cliente.get("/api/v1/monitoreo").json()
+    assert m["pronosticos"] >= 3 and "/api/v1/pronostico" in m["latencia_por_ruta"]
+    assert m["estado"] in {"ok", "alerta"}
+
+
+def test_metricas_prometheus(cliente, base):
+    cliente.post("/api/v1/pronostico", json=base)
+    r = cliente.get("/metrics")
+    assert r.status_code == 200
+    assert "demanda_ia_predicciones_total" in r.text and "demanda_ia_latencia_segundos_bucket" in r.text
+
+
+def test_salud_reporta_hash_del_modelo(cliente):
+    d = cliente.get("/api/v1/salud").json()
+    assert d["app_version"] == "1.1.0" and len(d["modelo_sha256"]) == 12

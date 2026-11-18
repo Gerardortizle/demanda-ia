@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from demanda_ia.config import FEATURES, PRODUCTOS
+from demanda_ia.config import FEATURES, METADATA_PATH, PRODUCTOS
 from demanda_ia.data import simular_serie
 from demanda_ia.features import es_festivo, fila_features, ventanas_desde_historial
 from demanda_ia.model import ModeloDemanda
@@ -22,7 +22,9 @@ def modelo():
 
 @pytest.fixture(scope="module")
 def evaluacion():
-    return {e["conjunto"]: e for e in json.loads((RAIZ / "reports" / "metricas.json").read_text(encoding="utf-8"))}
+    """Evaluación guardada junto al modelo campeón del registro."""
+    meta = json.loads(METADATA_PATH.read_text(encoding="utf-8"))
+    return {e["conjunto"]: e for e in meta["evaluacion"]}
 
 
 def test_variables_entrenamiento_igual_a_inferencia():
@@ -98,3 +100,28 @@ def test_quincena_eleva_cronicos(modelo):
 
 def test_antigripales_suben_en_invierno(modelo):
     assert _p50(modelo, fecha=date(2027, 1, 13)) > _p50(modelo, fecha=date(2026, 7, 15))
+
+
+def test_media_corrige_sesgo_semanal(evaluacion):
+    """v1.1: el modelo de media reduce el sesgo de la suma semanal respecto al P50 (hallazgo de la Fase II)."""
+    for e in evaluacion.values():
+        sem = e["semanal"]
+        assert abs(sem["modelo_media"]["sesgo_pct"]) < abs(sem["modelo_p50"]["sesgo_pct"])
+        assert sem["modelo_media"]["wape_pct"] <= sem["modelo_p50"]["wape_pct"]
+
+
+def test_politica_reabasto_cumple_nivel_de_servicio(evaluacion):
+    for e in evaluacion.values():
+        rb = e["reabasto"]["modelo"]
+        assert rb["total"]["fill_rate_pct"] >= 96 and rb["esenciales"]["fill_rate_pct"] >= 97
+
+
+def test_equidad_entre_sucursales(evaluacion):
+    for e in evaluacion.values():
+        assert e["equidad"]["razon_peor_mejor"] <= 1.25
+
+
+def test_media_disponible_en_inferencia(modelo):
+    p = modelo.predecir([{"sucursal_id": "SUC-001", "sku": "SKU-0001", "fecha": date(2026, 11, 4),
+                          "lag_7": 14, "media_7": 13.5, "media_28": 13.0}])[0]
+    assert p.media is not None and p.media >= 0

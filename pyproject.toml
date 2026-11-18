@@ -1,0 +1,22 @@
+[project]
+name = "demanda-ia"
+version = "1.1.0"
+description = "Pronóstico de demanda por SKU y sucursal para Farmacias Occidente Salud"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 140
+target-version = "py312"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "B", "UP"]
+ignore = ["E501", "B008", "E702", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = ["E402"]
+"tests/*" = ["E402"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

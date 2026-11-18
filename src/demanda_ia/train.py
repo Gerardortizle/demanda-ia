@@ -1,13 +1,19 @@
 """Entrenamiento offline de DEMANDA-IA.
 
-Uso:  python -m demanda_ia.train
-Genera models/demanda_ia_v1.joblib (modelos P50 y P90) y reports/metricas.json.
+Uso directo:   python -m demanda_ia.train --version 1.1.0
+Uso normal:    python -m demanda_ia.pipeline   (valida datos, entrena, evalúa, aplica compuertas y registra)
+
+Genera models/demanda_ia_<version>.joblib con tres modelos:
+  - P50 y P90 (regresión por cuantiles): base del pedido sugerido y del stock de seguridad.
+  - media (pérdida Poisson, nuevo en v1.1): demanda esperada sin sesgo para planear compras.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import time
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
+from pathlib import Path
 
 import joblib
 import numpy as np
@@ -16,10 +22,21 @@ import sklearn
 from sklearn.ensemble import HistGradientBoostingRegressor
 
 from .config import (
-    CATEGORIAS, ESTADOS, FEATURES, FEATURES_CATEGORICAS, METADATA_PATH, MODEL_PATH,
-    MODEL_VERSION, PRODUCTOS, RAIZ, SEMILLA, SUCURSALES, TIPOS_SUCURSAL,
+    CATEGORIAS,
+    ESTADOS,
+    FEATURES,
+    FEATURES_CATEGORICAS,
+    MODEL_VERSION,
+    MODELS_DIR,
+    PRODUCTOS,
+    REPORTS_DIR,
+    SEMILLA,
+    SUCURSALES,
+    TIPOS_SUCURSAL,
+    cargar_umbrales,
 )
 from .data import simular_serie
+from .evaluacion import evaluar, metricas  # noqa: F401  (metricas se re-exporta por compatibilidad)
 from .features import es_festivo, es_quincena
 
 INICIO = date(2024, 1, 1)
@@ -27,6 +44,10 @@ FIN = date(2025, 12, 31)
 CORTE = pd.Timestamp("2025-09-30")  # train <= corte < test
 N_SUC_TRAIN = 40
 N_SUC_HOLDOUT = 10
+
+PARAMS_CUANTIL = dict(learning_rate=0.08, max_iter=300, max_leaf_nodes=63, min_samples_leaf=40, l2_regularization=1.0)
+# Elegidos con scripts/experimentos.py (ver reports/experimentos.json y docs/adr/ADR-004)
+PARAMS_MEDIA = dict(learning_rate=0.1, max_iter=600, max_leaf_nodes=31, min_samples_leaf=80, l2_regularization=1.0)
 
 
 def elegir_sucursales() -> tuple[list[str], list[str]]:
@@ -36,12 +57,12 @@ def elegir_sucursales() -> tuple[list[str], list[str]]:
     return sorted(perm[:N_SUC_TRAIN]), sorted(perm[N_SUC_TRAIN:N_SUC_TRAIN + N_SUC_HOLDOUT])
 
 
-def construir_dataset(sucursales: list[str]) -> pd.DataFrame:
+def construir_dataset(sucursales: list[str], inicio: date = INICIO, fin: date = FIN) -> pd.DataFrame:
     bloques = []
     for sid in sucursales:
         s = SUCURSALES[sid]
         for sku, p in PRODUCTOS.items():
-            serie = simular_serie(sid, sku, INICIO, FIN)
+            serie = simular_serie(sid, sku, inicio, fin)
             y = pd.Series(serie["ventas"])
             df = pd.DataFrame(
                 {
@@ -75,119 +96,117 @@ def construir_dataset(sucursales: list[str]) -> pd.DataFrame:
     return df
 
 
-def metricas(y: np.ndarray, yhat: np.ndarray) -> dict[str, float]:
-    err = yhat - y
-    return {
-        "mae": float(np.mean(np.abs(err))),
-        "rmse": float(np.sqrt(np.mean(err**2))),
-        "wape_pct": float(100 * np.abs(err).sum() / max(y.sum(), 1e-9)),
-        "sesgo_pct": float(100 * err.sum() / max(y.sum(), 1e-9)),
-    }
-
-
-def nuevo_modelo(cuantil: float) -> HistGradientBoostingRegressor:
+def _mascara_categoricas() -> np.ndarray:
     mask = np.zeros(len(FEATURES), dtype=bool)
     mask[FEATURES_CATEGORICAS] = True
+    return mask
+
+
+def nuevo_modelo(cuantil: float, **params) -> HistGradientBoostingRegressor:
+    p = {**PARAMS_CUANTIL, **params}
     return HistGradientBoostingRegressor(
-        loss="quantile", quantile=cuantil, learning_rate=0.08, max_iter=300,
-        max_leaf_nodes=63, min_samples_leaf=40, l2_regularization=1.0,
-        categorical_features=mask, early_stopping=True, validation_fraction=0.1,
-        n_iter_no_change=20, random_state=SEMILLA,
+        loss="quantile", quantile=cuantil, categorical_features=_mascara_categoricas(),
+        early_stopping=True, validation_fraction=0.1, n_iter_no_change=20, random_state=SEMILLA, **p,
     )
 
 
-def evaluar(nombre: str, df: pd.DataFrame, p50: np.ndarray, p90: np.ndarray) -> dict:
-    y = df["y"].to_numpy()
-    res = {
-        "conjunto": nombre,
-        "filas": int(len(df)),
-        "modelo_p50": metricas(y, p50),
-        "baseline_lag7": metricas(y, df["lag_7"].to_numpy()),
-        "baseline_media28": metricas(y, df["media_28"].to_numpy()),
-        "oraculo_media_teorica": metricas(y, df["mu"].to_numpy()),
-        "cobertura_p90_pct": float(100 * np.mean(y <= p90)),
-        "semanal": {},
-        "por_categoria": {},
+def nuevo_modelo_media(**params) -> HistGradientBoostingRegressor:
+    p = {**PARAMS_MEDIA, **params}
+    return HistGradientBoostingRegressor(
+        loss="poisson", categorical_features=_mascara_categoricas(),
+        early_stopping=True, validation_fraction=0.1, n_iter_no_change=20, random_state=SEMILLA, **p,
+    )
+
+
+def predecir(modelos: dict, d: pd.DataFrame) -> tuple[np.ndarray, np.ndarray, np.ndarray | None]:
+    X = d[FEATURES].to_numpy(dtype=float)
+    p50 = np.clip(modelos["p50"].predict(X), 0, None)
+    p90 = np.maximum(np.clip(modelos["p90"].predict(X), 0, None), p50)
+    media = np.clip(modelos["media"].predict(X), 0, None) if modelos.get("media") is not None else None
+    return p50, p90, media
+
+
+def datos_entrenamiento() -> dict[str, pd.DataFrame]:
+    suc_train, suc_holdout = elegir_sucursales()
+    df = construir_dataset(suc_train)
+    df_hold = construir_dataset(suc_holdout)
+    return {
+        "entrenamiento": df[df["fecha"] <= CORTE],
+        "prueba_temporal": df[df["fecha"] > CORTE],
+        "sucursales_no_vistas": df_hold[df_hold["fecha"] > CORTE],
+        "suc_train": suc_train,
+        "suc_holdout": suc_holdout,
     }
-    # Error agregado por semana y par sucursal-SKU (horizonte real del reabasto)
-    sem = df.assign(p50=p50, lag7=df["lag_7"].to_numpy()).assign(
-        semana=df["fecha"].dt.to_period("W")
-    ).groupby(["sucursal_id", "sku", "semana"])[["y", "p50", "lag7", "mu"]].sum()
-    res["semanal"] = {
-        "modelo_p50": metricas(sem["y"].to_numpy(), sem["p50"].to_numpy()),
-        "baseline_lag7": metricas(sem["y"].to_numpy(), sem["lag7"].to_numpy()),
-        "oraculo_media_teorica": metricas(sem["y"].to_numpy(), sem["mu"].to_numpy()),
+
+
+def entrenar(datos: dict, con_media: bool = True, params_media: dict | None = None) -> dict:
+    ent = datos["entrenamiento"]
+    X = ent[FEATURES].to_numpy(dtype=float)
+    y = ent["y"].to_numpy()
+    modelos: dict = {}
+    for q, clave in ((0.5, "p50"), (0.9, "p90")):
+        modelos[clave] = nuevo_modelo(q).fit(X, y)
+        print(f"  cuantil {q}: {modelos[clave].n_iter_} iteraciones")
+    modelos["media"] = None
+    if con_media:
+        modelos["media"] = nuevo_modelo_media(**(params_media or {})).fit(X, y)
+        print(f"  media (Poisson): {modelos['media'].n_iter_} iteraciones")
+    return modelos
+
+
+def evaluar_modelos(modelos: dict, datos: dict) -> list[dict]:
+    pol = cargar_umbrales()["politica_reabasto"]
+    return [
+        evaluar(nombre, datos[nombre], *predecir(modelos, datos[nombre]),
+                factor_seguridad=pol["factor_seguridad"], esenciales=pol["categorias_esenciales"])
+        for nombre in ("prueba_temporal", "sucursales_no_vistas")
+    ]
+
+
+def guardar(modelos: dict, meta: dict, version: str, models_dir: Path = MODELS_DIR) -> Path:
+    models_dir.mkdir(parents=True, exist_ok=True)
+    ruta = models_dir / f"demanda_ia_{version}.joblib"
+    joblib.dump({**modelos, "meta": meta}, ruta, compress=3)
+    ruta.with_suffix(".json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
+    return ruta
+
+
+def construir_meta(version: str, datos: dict, resultados: list[dict], con_media: bool, segundos: float,
+                   params_media: dict | None = None) -> dict:
+    return {
+        "nombre": "DEMANDA-IA",
+        "version": version,
+        "algoritmo": "HistGradientBoostingRegressor: cuantiles P50/P90"
+                     + (" + media con perdida Poisson" if con_media else ""),
+        "features": FEATURES,
+        "sklearn_version": sklearn.__version__,
+        "entrenado_en": datetime.now(UTC).isoformat(timespec="seconds"),
+        "periodo_entrenamiento": [str(INICIO), str(CORTE.date())],
+        "periodo_prueba": [str((CORTE + pd.Timedelta(days=1)).date()), str(FIN)],
+        "sucursales_entrenamiento": datos["suc_train"],
+        "sucursales_holdout": datos["suc_holdout"],
+        "hiperparametros": {"cuantiles": PARAMS_CUANTIL, "media": ({**PARAMS_MEDIA, **(params_media or {})} if con_media else None)},
+        "evaluacion": resultados,
+        "segundos_entrenamiento": round(segundos, 1),
     }
-    for i, cat in enumerate(CATEGORIAS):
-        m = df["categoria"].to_numpy() == i
-        res["por_categoria"][cat] = {
-            "wape_modelo_pct": metricas(y[m], p50[m])["wape_pct"],
-            "wape_lag7_pct": metricas(y[m], df["lag_7"].to_numpy()[m])["wape_pct"],
-            "cobertura_p90_pct": float(100 * np.mean(y[m] <= p90[m])),
-        }
-    return res
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser(description="Entrena DEMANDA-IA (sin compuertas; para eso usar demanda_ia.pipeline)")
+    ap.add_argument("--version", default=MODEL_VERSION)
+    ap.add_argument("--sin-media", action="store_true", help="Reproduce la arquitectura v1.0 (solo P50/P90)")
+    args = ap.parse_args()
     t0 = time.time()
-    suc_train, suc_holdout = elegir_sucursales()
-    print(f"Sucursales entrenamiento: {len(suc_train)} | holdout: {len(suc_holdout)}")
-    df = construir_dataset(suc_train)
-    df_hold = construir_dataset(suc_holdout)
-    entrenamiento = df[df["fecha"] <= CORTE]
-    prueba = df[df["fecha"] > CORTE]
-    holdout = df_hold[df_hold["fecha"] > CORTE]
-    print(f"Filas: train={len(entrenamiento):,} test={len(prueba):,} holdout={len(holdout):,}")
-
-    X = entrenamiento[FEATURES].to_numpy(dtype=float)
-    y = entrenamiento["y"].to_numpy()
-    modelos = {}
-    for q in (0.5, 0.9):
-        m = nuevo_modelo(q)
-        m.fit(X, y)
-        modelos[q] = m
-        print(f"  cuantil {q}: {m.n_iter_} iteraciones")
-
-    def pred(d):
-        Xd = d[FEATURES].to_numpy(dtype=float)
-        p50 = np.clip(modelos[0.5].predict(Xd), 0, None)
-        p90 = np.maximum(np.clip(modelos[0.9].predict(Xd), 0, None), p50)
-        return p50, p90
-
-    resultados = [evaluar("prueba_temporal", prueba, *pred(prueba)),
-                  evaluar("sucursales_no_vistas", holdout, *pred(holdout))]
-
-    # Muestra de predicciones para gráficas del documento de validación
-    p50, p90 = pred(prueba)
-    muestra = prueba.assign(p50=p50, p90=p90)[["sucursal_id", "sku", "fecha", "y", "p50", "p90", "lag_7", "media_28", "mu", "categoria", "en_promocion", "es_festivo"]]
-    (RAIZ / "reports").mkdir(exist_ok=True)
-    muestra = muestra.sample(n=min(30000, len(muestra)), random_state=SEMILLA)
-    muestra.to_csv(RAIZ / "reports" / "predicciones_prueba.csv.gz", index=False, compression="gzip")
-
-    meta = {
-        "nombre": "DEMANDA-IA",
-        "version": MODEL_VERSION,
-        "algoritmo": "HistGradientBoostingRegressor (regresion por cuantiles P50 y P90)",
-        "features": FEATURES,
-        "sklearn_version": sklearn.__version__,
-        "entrenado_en": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "periodo_entrenamiento": [str(INICIO), str(CORTE.date())],
-        "periodo_prueba": [str((CORTE + pd.Timedelta(days=1)).date()), str(FIN)],
-        "sucursales_entrenamiento": suc_train,
-        "sucursales_holdout": suc_holdout,
-        "evaluacion": resultados,
-        "segundos_entrenamiento": round(time.time() - t0, 1),
-    }
-    MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
-    joblib.dump({"p50": modelos[0.5], "p90": modelos[0.9], "meta": meta}, MODEL_PATH, compress=3)
-    METADATA_PATH.write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
-    (RAIZ / "reports" / "metricas.json").write_text(json.dumps(resultados, indent=2, ensure_ascii=False), encoding="utf-8")
-    for r in resultados:
-        print(f"[{r['conjunto']}] WAPE modelo={r['modelo_p50']['wape_pct']:.1f}% "
-              f"lag7={r['baseline_lag7']['wape_pct']:.1f}% media28={r['baseline_media28']['wape_pct']:.1f}% "
-              f"oraculo={r['oraculo_media_teorica']['wape_pct']:.1f}% cobertura P90={r['cobertura_p90_pct']:.1f}% | "
-              f"semanal modelo={r['semanal']['modelo_p50']['wape_pct']:.1f}% oraculo={r['semanal']['oraculo_media_teorica']['wape_pct']:.1f}%")
-    print(f"Modelo guardado en {MODEL_PATH} ({meta['segundos_entrenamiento']} s)")
+    datos = datos_entrenamiento()
+    print(f"Filas: train={len(datos['entrenamiento']):,} test={len(datos['prueba_temporal']):,} "
+          f"holdout={len(datos['sucursales_no_vistas']):,}")
+    modelos = entrenar(datos, con_media=not args.sin_media)
+    resultados = evaluar_modelos(modelos, datos)
+    meta = construir_meta(args.version, datos, resultados, not args.sin_media, time.time() - t0)
+    ruta = guardar(modelos, meta, args.version)
+    REPORTS_DIR.mkdir(exist_ok=True)
+    (REPORTS_DIR / "metricas.json").write_text(json.dumps(resultados, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(f"Modelo guardado en {ruta}")
 
 
 if __name__ == "__main__":

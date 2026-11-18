@@ -26,4 +26,8 @@ try {
   Invoke-RestMethod "$Url/api/v1/pronostico" -Method Post -ContentType "application/json" -Body $malo | Out-Null
   Write-Host "FALLA SKU invalido deberia dar 422" -ForegroundColor Red; $fallas++
 } catch { Write-Host "OK    SKU invalido rechazado (422)" -ForegroundColor Green }
+# Fase III: monitoreo, auditoría y métricas Prometheus
+Revisar "GET /api/v1/monitoreo" { Invoke-RestMethod "$Url/api/v1/monitoreo" } | Select-Object modelo_version, pronosticos, tasa_advertencias_pct, estado | Format-List
+Revisar "GET /api/v1/auditoria" { (Invoke-RestMethod "$Url/api/v1/auditoria?n=3").eventos } | Select-Object id_peticion, endpoint, modelo_version, modelo_sha256 | Format-Table
+Revisar "GET /metrics (Prometheus)" { Invoke-WebRequest "$Url/metrics" -UseBasicParsing | Out-Null }
 if ($fallas -eq 0) { Write-Host "Prueba de humo superada" } else { Write-Host "$fallas prueba(s) fallaron"; exit 1 }

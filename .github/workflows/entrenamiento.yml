@@ -1,0 +1,86 @@
+# Pipeline de entrenamiento continuo (CT) de DEMANDA-IA
+#
+# Se ejecuta: el día 1 de cada mes (reentrenamiento programado, Fase I: R08),
+#             a mano desde la pestaña Actions, o cuando monitoreo.yml detecta degradación.
+# Pasos: validar datos -> entrenar retador -> evaluar -> compuertas -> campeón vs retador
+#        -> registrar en MLflow y en models/registro.json.
+# GitOps: si el retador gana, NO se despliega directo. Se abre un pull request con el nuevo
+# artefacto y el registro actualizado; al aprobarlo y fusionarlo, ci.yml y cd.yml lo publican.
+name: entrenamiento
+
+on:
+  schedule:
+    - cron: "0 7 1 * *"          # 01:00 hora del centro de México, día 1 de cada mes
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versión del retador (vacío = fecha, p. ej. 1.1.20261201)"
+        required: false
+      motivo:
+        description: "Motivo del reentrenamiento"
+        required: false
+        default: "manual"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  PYTHONPATH: src
+  MLFLOW_TRACKING_URI: sqlite:///mlflow.db
+
+jobs:
+  entrenar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-mlops.txt
+      - name: Versión del retador
+        id: v
+        run: |
+          V="${{ github.event.inputs.version }}"
+          [ -z "$V" ] && V="1.1.$(date -u +%Y%m%d)"
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+      - name: Pipeline (datos, entrenamiento, evaluación, compuertas, registro)
+        id: pipeline
+        run: |
+          set +e
+          python -m demanda_ia.pipeline --version ${{ steps.v.outputs.version }} --promover --mlflow
+          echo "codigo=$?" >> "$GITHUB_OUTPUT"
+      - name: Evidencias (MLflow, métricas, bitácora)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: entrenamiento-${{ steps.v.outputs.version }}
+          path: |
+            mlflow.db
+            mlruns/
+            reports/pipeline/${{ steps.v.outputs.version }}/
+            models/demanda_ia_${{ steps.v.outputs.version }}.json
+      - name: Pruebas con el nuevo campeón
+        if: steps.pipeline.outputs.codigo == '0'
+        run: python -m pytest -q && python scripts/verificar_modelo.py
+      - name: Pull request con el modelo (GitOps)
+        if: steps.pipeline.outputs.codigo == '0'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: modelo/${{ steps.v.outputs.version }}
+          commit-message: "modelo: retador ${{ steps.v.outputs.version }} (${{ github.event.inputs.motivo || 'programado' }})"
+          title: "Modelo ${{ steps.v.outputs.version }}: resultado del pipeline de entrenamiento"
+          body-path: reports/pipeline/${{ steps.v.outputs.version }}/resumen.md
+          labels: modelo, mlops
+          add-paths: |
+            models/registro.json
+            models/demanda_ia_${{ steps.v.outputs.version }}.joblib
+            models/demanda_ia_${{ steps.v.outputs.version }}.json
+            reports/pipeline/${{ steps.v.outputs.version }}/
+      - name: Retador rechazado
+        if: steps.pipeline.outputs.codigo != '0'
+        run: |
+          echo "El retador no pasó las compuertas; el campeón actual sigue en producción." >> "$GITHUB_STEP_SUMMARY"
+          exit 1

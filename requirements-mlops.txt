@@ -1,0 +1,4 @@
+# Seguimiento de experimentos y registro de corridas (workflows de entrenamiento y monitoreo).
+# No se instala en la imagen de producción ni es necesario para las pruebas.
+-r requirements-dev.txt
+mlflow==3.18.0

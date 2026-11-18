@@ -54,6 +54,7 @@ class RespuestaPronostico(BaseModel):
     fecha: date
     pronostico_p50: float
     pronostico_p90: float
+    pronostico_media: float | None = Field(default=None, description="Demanda esperada (modelo Poisson, v1.1)")
     unidades_sugeridas: int
     advertencias: list[str]
     modelo_version: str
@@ -95,6 +96,7 @@ class DiaPronostico(BaseModel):
     fecha: date
     p50: float
     p90: float
+    media: float | None = None
 
 
 class RespuestaReabasto(BaseModel):
@@ -102,7 +104,8 @@ class RespuestaReabasto(BaseModel):
     sku: str
     horizonte_dias: int
     dias: list[DiaPronostico]
-    demanda_esperada: float
+    demanda_esperada: float = Field(description="Suma de P50 del horizonte; base del pedido sugerido")
+    demanda_media: float | None = Field(default=None, description="Suma de la demanda esperada (v1.1) para planear compras")
     stock_seguridad: float
     existencia_actual: float
     pedido_sugerido: int

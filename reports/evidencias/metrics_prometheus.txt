@@ -1,0 +1,16 @@
+demanda_ia_peticiones_total{codigo="200",ruta="/api/v1/salud"} 2.0
+demanda_ia_peticiones_total{codigo="200",ruta="/api/v1/modelo"} 1.0
+demanda_ia_peticiones_total{codigo="200",ruta="/api/v1/catalogo"} 1.0
+demanda_ia_peticiones_total{codigo="200",ruta="/api/v1/pronostico"} 105.0
+demanda_ia_peticiones_total{codigo="200",ruta="/api/v1/pronostico/lote"} 26.0
+demanda_ia_peticiones_total{codigo="200",ruta="/api/v1/historial"} 2.0
+demanda_ia_peticiones_total{codigo="200",ruta="/api/v1/reabasto"} 51.0
+demanda_ia_peticiones_total{codigo="422",ruta="/api/v1/pronostico"} 1.0
+demanda_ia_peticiones_total{codigo="200",ruta="/api/v1/monitoreo"} 2.0
+demanda_ia_peticiones_total{codigo="200",ruta="/api/v1/auditoria"} 2.0
+demanda_ia_peticiones_total{codigo="200",ruta="/metrics"} 1.0
+demanda_ia_predicciones_total{endpoint="pronostico",modelo_version="1.1.0"} 105.0
+demanda_ia_predicciones_total{endpoint="pronostico_lote",modelo_version="1.1.0"} 24202.0
+demanda_ia_predicciones_total{endpoint="reabasto",modelo_version="1.1.0"} 51.0
+demanda_ia_advertencias_total{tipo="precio_fuera_de_rango"} 1.0
+demanda_ia_advertencias_total{tipo="historial_en_ceros"} 1.0

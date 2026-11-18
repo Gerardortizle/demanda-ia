@@ -1,0 +1,16 @@
+# Alternativa on-premise (Kubernetes / OpenShift) con despliegue GitOps tipo pull mediante Argo CD.
+# Se usaría si el área legal exige que las ventas no salgan de la red privada (Fase II, sección 6).
+# Para promover una versión se cambia newTag en un pull request; Argo CD sincroniza el clúster.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: demanda-ia
+labels:
+  - pairs:
+      part-of: demanda-ia
+resources:
+  - deployment.yaml
+  - service.yaml
+  - hpa.yaml
+images:
+  - name: ghcr.io/gerardortizle/demanda-ia
+    newTag: "1.1.0"

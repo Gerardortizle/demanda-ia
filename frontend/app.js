@@ -77,7 +77,8 @@ function pintar(hist, r) {
   $("avisos").innerHTML = r.advertencias.map((a) => `<li>${a}</li>`).join("");
   $("tabla").innerHTML = r.dias
     .map((d) => `<tr><td>${d.fecha}</td><td>${d.p50.toFixed(1)}</td><td>${d.p90.toFixed(1)}</td></tr>`).join("");
-  $("meta").textContent = `Modelo v${r.modelo_version} · ${r.sucursal_id} · ${r.sku} · horizonte ${r.horizonte_dias} días`;
+  const media = r.demanda_media == null ? "" : ` · demanda media para compras ${r.demanda_media.toFixed(1)} pz`;
+  $("meta").textContent = `Modelo v${r.modelo_version} · ${r.sucursal_id} · ${r.sku} · horizonte ${r.horizonte_dias} días${media}`;
   grafica(hist.ventas, r.dias);
 }
 

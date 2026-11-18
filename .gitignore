@@ -8,3 +8,9 @@ data/*
 !data/.gitkeep
 *.log
 .DS_Store
+
+# MLOps (se publican como artefactos del workflow, no en Git)
+mlflow.db
+mlruns/
+reports/junit.xml
+reports/cobertura.xml

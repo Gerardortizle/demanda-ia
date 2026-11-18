@@ -1,0 +1,169 @@
+{
+  "modelo_version": "1.1.0",
+  "escenario": "competidor_jalisco",
+  "descripcion_escenario": "Apertura de competidor: -35 % en todas las categorías de sucursales de Jalisco desde la semana 5",
+  "ventana": [
+    "2026-08-03",
+    "2026-10-25"
+  ],
+  "sucursales": 30,
+  "filas": 75600,
+  "resumen": {
+    "wape_semanal_pct": 22.78,
+    "sesgo_semanal_pct": 2.95,
+    "cobertura_p90_ultimas4_pct": 91.95
+  },
+  "por_semana": [
+    {
+      "semana": "2026-08-03",
+      "wape_semanal_pct": 19.23,
+      "sesgo_semanal_pct": -4.5,
+      "cobertura_p90_pct": 89.03,
+      "fill_rate_pct": 97.85
+    },
+    {
+      "semana": "2026-08-10",
+      "wape_semanal_pct": 19.36,
+      "sesgo_semanal_pct": -3.96,
+      "cobertura_p90_pct": 88.63,
+      "fill_rate_pct": 97.43
+    },
+    {
+      "semana": "2026-08-17",
+      "wape_semanal_pct": 19.03,
+      "sesgo_semanal_pct": -6.35,
+      "cobertura_p90_pct": 88.49,
+      "fill_rate_pct": 97.03
+    },
+    {
+      "semana": "2026-08-24",
+      "wape_semanal_pct": 19.26,
+      "sesgo_semanal_pct": -6.2,
+      "cobertura_p90_pct": 88.56,
+      "fill_rate_pct": 96.95
+    },
+    {
+      "semana": "2026-08-31",
+      "wape_semanal_pct": 28.31,
+      "sesgo_semanal_pct": 12.96,
+      "cobertura_p90_pct": 93.21,
+      "fill_rate_pct": 98.34
+    },
+    {
+      "semana": "2026-09-07",
+      "wape_semanal_pct": 27.85,
+      "sesgo_semanal_pct": 11.38,
+      "cobertura_p90_pct": 93.17,
+      "fill_rate_pct": 98.22
+    },
+    {
+      "semana": "2026-09-14",
+      "wape_semanal_pct": 26.62,
+      "sesgo_semanal_pct": 10.6,
+      "cobertura_p90_pct": 93.6,
+      "fill_rate_pct": 97.93
+    },
+    {
+      "semana": "2026-09-21",
+      "wape_semanal_pct": 23.74,
+      "sesgo_semanal_pct": 5.78,
+      "cobertura_p90_pct": 92.56,
+      "fill_rate_pct": 98.29
+    },
+    {
+      "semana": "2026-09-28",
+      "wape_semanal_pct": 22.57,
+      "sesgo_semanal_pct": 4.74,
+      "cobertura_p90_pct": 91.73,
+      "fill_rate_pct": 98.09
+    },
+    {
+      "semana": "2026-10-05",
+      "wape_semanal_pct": 23.93,
+      "sesgo_semanal_pct": 7.43,
+      "cobertura_p90_pct": 92.6,
+      "fill_rate_pct": 98.2
+    },
+    {
+      "semana": "2026-10-12",
+      "wape_semanal_pct": 23.55,
+      "sesgo_semanal_pct": 5.37,
+      "cobertura_p90_pct": 92.14,
+      "fill_rate_pct": 97.93
+    },
+    {
+      "semana": "2026-10-19",
+      "wape_semanal_pct": 22.64,
+      "sesgo_semanal_pct": 4.03,
+      "cobertura_p90_pct": 91.35,
+      "fill_rate_pct": 98.01
+    }
+  ],
+  "psi": {
+    "precio_relativo": 0.0,
+    "en_promocion": 0.0001,
+    "dia_semana": 0.0,
+    "es_quincena": 0.0031,
+    "lag_7": 0.0159,
+    "media_7": 0.0197,
+    "media_28": 0.0196,
+    "pronostico": 0.0115,
+    "venta_real": 0.0193
+  },
+  "equidad": {
+    "pronostico": "media",
+    "quintiles": {
+      "Q1": {
+        "sucursales": 6,
+        "venta_semanal_media": 21.30787037037037,
+        "wape_semanal_pct": 24.924211132636078
+      },
+      "Q2": {
+        "sucursales": 6,
+        "venta_semanal_media": 31.680092592592594,
+        "wape_semanal_pct": 26.01329612424037
+      },
+      "Q3": {
+        "sucursales": 6,
+        "venta_semanal_media": 38.61064814814815,
+        "wape_semanal_pct": 26.236382067113734
+      },
+      "Q4": {
+        "sucursales": 6,
+        "venta_semanal_media": 49.61527777777778,
+        "wape_semanal_pct": 19.15768301656486
+      },
+      "Q5": {
+        "sucursales": 6,
+        "venta_semanal_media": 80.21342592592593,
+        "wape_semanal_pct": 21.517477167022424
+      }
+    },
+    "razon_peor_mejor": 1.3694966162885258
+  },
+  "alertas": [
+    {
+      "tipo": "desempeno",
+      "semana": "2026-08-31",
+      "detalle": "WAPE semanal 28.31 % > 26.0 %"
+    },
+    {
+      "tipo": "desempeno",
+      "semana": "2026-09-07",
+      "detalle": "WAPE semanal 27.85 % > 26.0 %"
+    },
+    {
+      "tipo": "desempeno",
+      "semana": "2026-09-14",
+      "detalle": "WAPE semanal 26.62 % > 26.0 %"
+    },
+    {
+      "tipo": "equidad",
+      "semana": "ventana",
+      "detalle": "Razon de WAPE peor/mejor quintil 1.369 > 1.25"
+    }
+  ],
+  "advertencias": [],
+  "estado": "alerta",
+  "accion_recomendada": "reentrenar: lanzar el workflow 'entrenamiento' y evaluar al retador contra el campeon"
+}

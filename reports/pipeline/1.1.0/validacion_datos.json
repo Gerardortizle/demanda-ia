@@ -1,0 +1,278 @@
+{
+  "entrenamiento": {
+    "aprobado": true,
+    "reglas": 14,
+    "fallas_criticas": 0,
+    "advertencias": 0,
+    "detalle": [
+      {
+        "regla": "esquema_columnas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "15 variables + llaves"
+      },
+      {
+        "regla": "no_vacio",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "733,200 filas"
+      },
+      {
+        "regla": "sin_nulos",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 valores nulos"
+      },
+      {
+        "regla": "llave_unica",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 filas duplicadas sucursal-sku-fecha"
+      },
+      {
+        "regla": "ventas_no_negativas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 ventas negativas"
+      },
+      {
+        "regla": "catalogo_sucursales",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "desconocidas: []"
+      },
+      {
+        "regla": "catalogo_skus",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "desconocidos: []"
+      },
+      {
+        "regla": "codigos_categoricos",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "categoria, tipo_sucursal y estado dentro del catalogo"
+      },
+      {
+        "regla": "precio_relativo_rango",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0.00% fuera de [0.5, 1.5]"
+      },
+      {
+        "regla": "calendario_valido",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "dia_semana, mes y dia_mes en rango"
+      },
+      {
+        "regla": "ventanas_no_negativas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "lag_7, media_7, media_28 >= 0"
+      },
+      {
+        "regla": "series_continuas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 dias faltantes en 1200 series"
+      },
+      {
+        "regla": "tasa_dias_sin_venta",
+        "severidad": "advertencia",
+        "paso": true,
+        "detalle": "9.1% de dias con venta cero (limite 35%); posible desabasto (R01)"
+      },
+      {
+        "regla": "ventas_extremas",
+        "severidad": "advertencia",
+        "paso": true,
+        "detalle": "0 ventas > 10x el percentil 99.9 (72)"
+      }
+    ]
+  },
+  "prueba_temporal": {
+    "aprobado": true,
+    "reglas": 14,
+    "fallas_criticas": 0,
+    "advertencias": 0,
+    "detalle": [
+      {
+        "regla": "esquema_columnas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "15 variables + llaves"
+      },
+      {
+        "regla": "no_vacio",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "110,400 filas"
+      },
+      {
+        "regla": "sin_nulos",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 valores nulos"
+      },
+      {
+        "regla": "llave_unica",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 filas duplicadas sucursal-sku-fecha"
+      },
+      {
+        "regla": "ventas_no_negativas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 ventas negativas"
+      },
+      {
+        "regla": "catalogo_sucursales",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "desconocidas: []"
+      },
+      {
+        "regla": "catalogo_skus",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "desconocidos: []"
+      },
+      {
+        "regla": "codigos_categoricos",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "categoria, tipo_sucursal y estado dentro del catalogo"
+      },
+      {
+        "regla": "precio_relativo_rango",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0.00% fuera de [0.5, 1.5]"
+      },
+      {
+        "regla": "calendario_valido",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "dia_semana, mes y dia_mes en rango"
+      },
+      {
+        "regla": "ventanas_no_negativas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "lag_7, media_7, media_28 >= 0"
+      },
+      {
+        "regla": "series_continuas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 dias faltantes en 1200 series"
+      },
+      {
+        "regla": "tasa_dias_sin_venta",
+        "severidad": "advertencia",
+        "paso": true,
+        "detalle": "8.4% de dias con venta cero (limite 35%); posible desabasto (R01)"
+      },
+      {
+        "regla": "ventas_extremas",
+        "severidad": "advertencia",
+        "paso": true,
+        "detalle": "0 ventas > 10x el percentil 99.9 (67)"
+      }
+    ]
+  },
+  "sucursales_no_vistas": {
+    "aprobado": true,
+    "reglas": 14,
+    "fallas_criticas": 0,
+    "advertencias": 0,
+    "detalle": [
+      {
+        "regla": "esquema_columnas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "15 variables + llaves"
+      },
+      {
+        "regla": "no_vacio",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "27,600 filas"
+      },
+      {
+        "regla": "sin_nulos",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 valores nulos"
+      },
+      {
+        "regla": "llave_unica",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 filas duplicadas sucursal-sku-fecha"
+      },
+      {
+        "regla": "ventas_no_negativas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 ventas negativas"
+      },
+      {
+        "regla": "catalogo_sucursales",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "desconocidas: []"
+      },
+      {
+        "regla": "catalogo_skus",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "desconocidos: []"
+      },
+      {
+        "regla": "codigos_categoricos",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "categoria, tipo_sucursal y estado dentro del catalogo"
+      },
+      {
+        "regla": "precio_relativo_rango",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0.00% fuera de [0.5, 1.5]"
+      },
+      {
+        "regla": "calendario_valido",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "dia_semana, mes y dia_mes en rango"
+      },
+      {
+        "regla": "ventanas_no_negativas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "lag_7, media_7, media_28 >= 0"
+      },
+      {
+        "regla": "series_continuas",
+        "severidad": "critica",
+        "paso": true,
+        "detalle": "0 dias faltantes en 300 series"
+      },
+      {
+        "regla": "tasa_dias_sin_venta",
+        "severidad": "advertencia",
+        "paso": true,
+        "detalle": "10.2% de dias con venta cero (limite 35%); posible desabasto (R01)"
+      },
+      {
+        "regla": "ventas_extremas",
+        "severidad": "advertencia",
+        "paso": true,
+        "detalle": "0 ventas > 10x el percentil 99.9 (90)"
+      }
+    ]
+  }
+}

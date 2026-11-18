@@ -1,0 +1,159 @@
+{
+  "modelo_version": "1.1.0",
+  "escenario": "alza_precios",
+  "descripcion_escenario": "Alza general de precios de 15 % desde la semana 5 (fuera del rango de entrenamiento)",
+  "ventana": [
+    "2026-08-03",
+    "2026-10-25"
+  ],
+  "sucursales": 30,
+  "filas": 75600,
+  "resumen": {
+    "wape_semanal_pct": 19.73,
+    "sesgo_semanal_pct": 3.06,
+    "cobertura_p90_ultimas4_pct": 91.65
+  },
+  "por_semana": [
+    {
+      "semana": "2026-08-03",
+      "wape_semanal_pct": 19.23,
+      "sesgo_semanal_pct": -4.5,
+      "cobertura_p90_pct": 89.03,
+      "fill_rate_pct": 97.85
+    },
+    {
+      "semana": "2026-08-10",
+      "wape_semanal_pct": 19.36,
+      "sesgo_semanal_pct": -3.96,
+      "cobertura_p90_pct": 88.63,
+      "fill_rate_pct": 97.43
+    },
+    {
+      "semana": "2026-08-17",
+      "wape_semanal_pct": 19.03,
+      "sesgo_semanal_pct": -6.35,
+      "cobertura_p90_pct": 88.49,
+      "fill_rate_pct": 97.03
+    },
+    {
+      "semana": "2026-08-24",
+      "wape_semanal_pct": 19.26,
+      "sesgo_semanal_pct": -6.2,
+      "cobertura_p90_pct": 88.56,
+      "fill_rate_pct": 96.95
+    },
+    {
+      "semana": "2026-08-31",
+      "wape_semanal_pct": 21.11,
+      "sesgo_semanal_pct": 12.67,
+      "cobertura_p90_pct": 94.08,
+      "fill_rate_pct": 99.61
+    },
+    {
+      "semana": "2026-09-07",
+      "wape_semanal_pct": 21.21,
+      "sesgo_semanal_pct": 11.31,
+      "cobertura_p90_pct": 93.87,
+      "fill_rate_pct": 99.43
+    },
+    {
+      "semana": "2026-09-14",
+      "wape_semanal_pct": 21.97,
+      "sesgo_semanal_pct": 10.17,
+      "cobertura_p90_pct": 93.4,
+      "fill_rate_pct": 99.02
+    },
+    {
+      "semana": "2026-09-21",
+      "wape_semanal_pct": 18.51,
+      "sesgo_semanal_pct": 5.95,
+      "cobertura_p90_pct": 92.86,
+      "fill_rate_pct": 99.02
+    },
+    {
+      "semana": "2026-09-28",
+      "wape_semanal_pct": 18.96,
+      "sesgo_semanal_pct": 5.34,
+      "cobertura_p90_pct": 91.68,
+      "fill_rate_pct": 98.62
+    },
+    {
+      "semana": "2026-10-05",
+      "wape_semanal_pct": 19.92,
+      "sesgo_semanal_pct": 7.88,
+      "cobertura_p90_pct": 92.56,
+      "fill_rate_pct": 98.87
+    },
+    {
+      "semana": "2026-10-12",
+      "wape_semanal_pct": 19.66,
+      "sesgo_semanal_pct": 5.8,
+      "cobertura_p90_pct": 91.27,
+      "fill_rate_pct": 98.71
+    },
+    {
+      "semana": "2026-10-19",
+      "wape_semanal_pct": 19.06,
+      "sesgo_semanal_pct": 4.82,
+      "cobertura_p90_pct": 91.08,
+      "fill_rate_pct": 98.52
+    }
+  ],
+  "psi": {
+    "precio_relativo": 6.041,
+    "en_promocion": 0.0001,
+    "dia_semana": 0.0,
+    "es_quincena": 0.0031,
+    "lag_7": 0.0358,
+    "media_7": 0.0175,
+    "media_28": 0.0188,
+    "pronostico": 0.0122,
+    "venta_real": 0.0454
+  },
+  "equidad": {
+    "pronostico": "media",
+    "quintiles": {
+      "Q1": {
+        "sucursales": 6,
+        "venta_semanal_media": 20.20277777777778,
+        "wape_semanal_pct": 22.934574083180948
+      },
+      "Q2": {
+        "sucursales": 6,
+        "venta_semanal_media": 33.05138888888889,
+        "wape_semanal_pct": 21.03685918500545
+      },
+      "Q3": {
+        "sucursales": 6,
+        "venta_semanal_media": 41.23888888888889,
+        "wape_semanal_pct": 20.7009749372061
+      },
+      "Q4": {
+        "sucursales": 6,
+        "venta_semanal_media": 47.83935185185185,
+        "wape_semanal_pct": 18.949191847820607
+      },
+      "Q5": {
+        "sucursales": 6,
+        "venta_semanal_media": 77.51851851851852,
+        "wape_semanal_pct": 18.303197188791284
+      }
+    },
+    "razon_peor_mejor": 1.2530364966633194
+  },
+  "alertas": [
+    {
+      "tipo": "deriva_datos",
+      "semana": "ventana",
+      "detalle": "PSI de precio_relativo = 6.041 > 0.25"
+    },
+    {
+      "tipo": "equidad",
+      "semana": "ventana",
+      "detalle": "Razon de WAPE peor/mejor quintil 1.253 > 1.25"
+    }
+  ],
+  "advertencias": [],
+  "estado": "alerta",
+  "accion_recomendada": "investigar: hay deriva o inequidad sin degradacion confirmada del error"
+}

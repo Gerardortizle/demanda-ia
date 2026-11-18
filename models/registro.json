@@ -1,0 +1,117 @@
+{
+  "campeon": "1.1.0",
+  "modelos": {
+    "1.0.0": {
+      "artefacto": "demanda_ia_v1.joblib",
+      "sha256": "00ee24b523611b8fed39c7742e401d85466942a58c640c44b5637c79950f6e48",
+      "etapa": "archivado",
+      "registrado_en": "2026-11-18T16:30:10+00:00",
+      "algoritmo": "HistGradientBoostingRegressor (regresion por cuantiles P50 y P90)",
+      "sklearn_version": "1.8.0",
+      "huella_datos": "8e5e72b7995f362c15460158dc4da857489c687205cf9327b0f73c9653208057",
+      "commit": "fase-ii",
+      "hiperparametros": {
+        "cuantiles": "ver train.PARAMS_CUANTIL",
+        "media": null
+      },
+      "metricas": {
+        "prueba_temporal": {
+          "wape_semanal_pct": 19.678,
+          "sesgo_semanal_pct": -11.286,
+          "wape_diario_p50_pct": 46.189,
+          "cobertura_p90_pct": 88.79,
+          "fill_rate_pct": 97.784,
+          "razon_equidad": 1.208
+        },
+        "sucursales_no_vistas": {
+          "wape_semanal_pct": 20.864,
+          "sesgo_semanal_pct": -13.993,
+          "wape_diario_p50_pct": 45.789,
+          "cobertura_p90_pct": 88.388,
+          "fill_rate_pct": 96.833,
+          "razon_equidad": 1.279
+        }
+      },
+      "compuertas_fallidas": [
+        "razon_equidad_max@sucursales_no_vistas"
+      ]
+    },
+    "1.1.0": {
+      "artefacto": "demanda_ia_1.1.0.joblib",
+      "sha256": "7d57ee24511acf69083f7a05c7ff7676268d9bb2af3c758aa0b7bf63f58b2952",
+      "etapa": "campeon",
+      "registrado_en": "2026-11-18T16:32:53+00:00",
+      "algoritmo": "HistGradientBoostingRegressor: cuantiles P50/P90 + media con perdida Poisson",
+      "sklearn_version": "1.8.0",
+      "huella_datos": "8e5e72b7995f362c15460158dc4da857489c687205cf9327b0f73c9653208057",
+      "commit": "e3cc079",
+      "hiperparametros": {
+        "cuantiles": {
+          "learning_rate": 0.08,
+          "max_iter": 300,
+          "max_leaf_nodes": 63,
+          "min_samples_leaf": 40,
+          "l2_regularization": 1.0
+        },
+        "media": {
+          "learning_rate": 0.1,
+          "max_iter": 600,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 80,
+          "l2_regularization": 1.0
+        }
+      },
+      "metricas": {
+        "prueba_temporal": {
+          "wape_semanal_pct": 17.79,
+          "sesgo_semanal_pct": -2.859,
+          "wape_diario_p50_pct": 46.189,
+          "cobertura_p90_pct": 88.79,
+          "fill_rate_pct": 97.784,
+          "razon_equidad": 1.223
+        },
+        "sucursales_no_vistas": {
+          "wape_semanal_pct": 19.298,
+          "sesgo_semanal_pct": -7.767,
+          "wape_diario_p50_pct": 45.789,
+          "cobertura_p90_pct": 88.388,
+          "fill_rate_pct": 96.833,
+          "razon_equidad": 1.238
+        }
+      },
+      "mlflow_run_id": "154d3ff9f287407ca411d1fcfd3bfbe1"
+    }
+  },
+  "historial": [
+    {
+      "fecha": "2026-11-18T16:30:10+00:00",
+      "accion": "registro",
+      "version": "1.0.0",
+      "detalle": "alta inicial: modelo de la Fase II"
+    },
+    {
+      "fecha": "2026-11-18T16:30:10+00:00",
+      "accion": "promocion",
+      "version": "1.0.0",
+      "detalle": "campeon inicial (Fase II, desplegado en Cloud Run) (anterior: None)"
+    },
+    {
+      "fecha": "2026-11-18T16:31:28+00:00",
+      "accion": "registro",
+      "version": "1.1.0",
+      "detalle": "etapa=retador"
+    },
+    {
+      "fecha": "2026-11-18T16:32:53+00:00",
+      "accion": "registro",
+      "version": "1.1.0",
+      "detalle": "etapa=retador"
+    },
+    {
+      "fecha": "2026-11-18T16:32:53+00:00",
+      "accion": "promocion",
+      "version": "1.1.0",
+      "detalle": "paso compuertas y no empeora al campeon (anterior: 1.0.0)"
+    }
+  ]
+}
