@@ -109,7 +109,10 @@ jobs:
         if: always()
         run: docker logs demanda
       - name: Escaneo de vulnerabilidades (Trivy, informativo)
-        uses: aquasecurity/trivy-action@0.28.0
+        # Fijado por SHA (v0.36.0): las etiquetas de esta acción cambiaron y una etiqueta puede moverse.
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        continue-on-error: true
+        timeout-minutes: 10
         with:
           image-ref: demanda-ia:${{ github.sha }}
           severity: CRITICAL,HIGH
